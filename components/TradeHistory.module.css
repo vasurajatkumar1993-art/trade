@@ -1,7 +1,9 @@
 .panel {
   background: var(--bg-dash);
-  padding: 20px 24px;
-  border-top: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .label {
@@ -22,7 +24,7 @@
 }
 
 .list {
-  max-height: 200px;
+  flex: 1;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #1e2130 transparent;

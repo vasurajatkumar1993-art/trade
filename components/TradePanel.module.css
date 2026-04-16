@@ -1,8 +1,10 @@
 .panel {
   background: var(--bg-dash);
-  padding: 24px;
-  border-left: 1px solid var(--border);
-  grid-row: 1 / 4;
+  padding: 16px 20px;
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #1e2130 transparent;
 }
 
 .label {

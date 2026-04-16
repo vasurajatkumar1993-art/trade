@@ -1,6 +1,6 @@
 .panel {
   background: var(--bg-dash);
-  padding: 24px;
+  padding: 16px 20px;
 }
 
 .label {
@@ -14,7 +14,7 @@
 
 .price {
   font-family: var(--font-mono);
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.02em;
 }

@@ -3,9 +3,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import {
   OrderMode, CoinId, COINS,
-  Positions, MarketDataMap, TradeRecord, Candle,
+  Positions, MarketDataMap, TradeRecord, Candle, PriceAlert,
 } from '@/lib/types'
-import { formatUSD, uid, generateCandles, getInitialMarket } from '@/lib/utils'
+import { uid, generateCandles, getInitialMarket } from '@/lib/utils'
 import TopBar from '@/components/TopBar'
 import CoinSelector from '@/components/CoinSelector'
 import BalancePanel from '@/components/BalancePanel'
@@ -14,6 +14,8 @@ import TradePanel from '@/components/TradePanel'
 import CandlestickChart from '@/components/CandlestickChart'
 import HoldingsPanel from '@/components/HoldingsPanel'
 import TradeHistory from '@/components/TradeHistory'
+import PriceAlerts from '@/components/PriceAlerts'
+import AlertToast from '@/components/AlertToast'
 import styles from './page.module.css'
 
 const INITIAL_USD = 50000
@@ -31,6 +33,7 @@ export default function DashboardPage() {
   const [usdBalance, setUsdBalance] = useState(INITIAL_USD)
   const [positions, setPositions]   = useState<Positions>(INITIAL_POSITIONS)
   const [trades, setTrades]         = useState<TradeRecord[]>([])
+  const [alerts, setAlerts]         = useState<PriceAlert[]>([])
 
   const coin       = COINS.find(c => c.id === activeCoin)!
   const market     = marketData[activeCoin]
@@ -73,7 +76,7 @@ export default function DashboardPage() {
         return updated
       })
 
-      // Append new candle tick
+      // Update candles
       setCandles(prev => {
         const updated = { ...prev }
         COINS.forEach(c => {
@@ -82,7 +85,6 @@ export default function DashboardPage() {
           const now = Date.now()
 
           if (now - last.time > 3600000) {
-            // New candle
             const currentPrice = marketData[c.id].price
             arr.push({
               time: now,
@@ -93,7 +95,6 @@ export default function DashboardPage() {
             })
             if (arr.length > 60) arr.shift()
           } else {
-            // Update last candle
             const currentPrice = marketData[c.id].price
             arr[arr.length - 1] = {
               ...last,
@@ -111,6 +112,26 @@ export default function DashboardPage() {
 
     return () => clearInterval(interval)
   }, [candles, marketData])
+
+  // Check price alerts on every market update
+  useEffect(() => {
+    setAlerts(prev => {
+      let changed = false
+      const updated = prev.map(a => {
+        if (a.triggered) return a
+        const price = marketData[a.coin].price
+        const hit =
+          (a.condition === 'above' && price >= a.targetPrice) ||
+          (a.condition === 'below' && price <= a.targetPrice)
+        if (hit) {
+          changed = true
+          return { ...a, triggered: true }
+        }
+        return a
+      })
+      return changed ? updated : prev
+    })
+  }, [marketData])
 
   function handleTrade(mode: OrderMode, amount: number) {
     const price = marketData[activeCoin].price
@@ -162,6 +183,14 @@ export default function DashboardPage() {
     ])
   }
 
+  function handleAddAlert(alert: PriceAlert) {
+    setAlerts(prev => [...prev, alert])
+  }
+
+  function handleRemoveAlert(id: string) {
+    setAlerts(prev => prev.filter(a => a.id !== id))
+  }
+
   return (
     <main className={styles.main}>
       <div className={styles.dash}>
@@ -173,34 +202,54 @@ export default function DashboardPage() {
           onSelect={setActiveCoin}
         />
 
-        <div className={styles.mainGrid}>
-          <BalancePanel
-            usdBalance={usdBalance}
-            positions={positions}
-            marketData={marketData}
-          />
-          <PricePanel market={market} coin={coin} />
-          <TradePanel
-            coin={coin}
-            price={market.price}
-            usdBalance={usdBalance}
-            position={position}
-            onTrade={handleTrade}
-          />
-        </div>
+        <div className={styles.bodyGrid}>
+          {/* Left column: info row + chart + bottom row */}
+          <div className={styles.leftCol}>
+            <div className={styles.infoRow}>
+              <BalancePanel
+                usdBalance={usdBalance}
+                positions={positions}
+                marketData={marketData}
+              />
+              <PricePanel market={market} coin={coin} />
+            </div>
 
-        <div className={styles.bottomGrid}>
-          <CandlestickChart candles={candles[activeCoin]} coin={coin} />
-          <HoldingsPanel
-            position={position}
-            coin={coin}
-            price={market.price}
-            totalTrades={totalTrades}
-          />
-        </div>
+            <div className={styles.chartArea}>
+              <CandlestickChart candles={candles[activeCoin]} coin={coin} />
+            </div>
 
-        <TradeHistory trades={trades} />
+            <div className={styles.bottomRow}>
+              <TradeHistory trades={trades} />
+              <HoldingsPanel
+                position={position}
+                coin={coin}
+                price={market.price}
+                totalTrades={totalTrades}
+              />
+            </div>
+          </div>
+
+          {/* Right column: trade panel + alerts */}
+          <div className={styles.rightCol}>
+            <TradePanel
+              coin={coin}
+              price={market.price}
+              usdBalance={usdBalance}
+              position={position}
+              onTrade={handleTrade}
+            />
+            <PriceAlerts
+              alerts={alerts}
+              activeCoin={activeCoin}
+              currentPrice={market.price}
+              onAddAlert={handleAddAlert}
+              onRemoveAlert={handleRemoveAlert}
+            />
+          </div>
+        </div>
       </div>
+
+      <AlertToast alerts={alerts} />
     </main>
   )
 }

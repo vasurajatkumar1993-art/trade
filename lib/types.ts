@@ -51,3 +51,14 @@ export interface TradeRecord {
   total: number
   fee: number
 }
+
+export type AlertCondition = 'above' | 'below'
+
+export interface PriceAlert {
+  id: string
+  coin: CoinId
+  condition: AlertCondition
+  targetPrice: number
+  triggered: boolean
+  createdAt: number
+}
