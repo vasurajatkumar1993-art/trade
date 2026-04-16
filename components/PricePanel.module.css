@@ -1,0 +1,60 @@
+.panel {
+  background: var(--bg-dash);
+  padding: 24px;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.price {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.change {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  margin-top: 8px;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.up {
+  background: rgba(76, 175, 125, 0.12);
+  color: var(--green);
+}
+
+.down {
+  background: rgba(229, 72, 72, 0.12);
+  color: var(--red);
+}
+
+.statsRow {
+  margin-top: 10px;
+  display: flex;
+  gap: 20px;
+}
+
+.stat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.stat span {
+  color: var(--text-secondary);
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+}

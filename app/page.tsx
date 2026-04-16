@@ -1,0 +1,206 @@
+'use client'
+
+import { useState, useEffect, useMemo } from 'react'
+import {
+  OrderMode, CoinId, COINS,
+  Positions, MarketDataMap, TradeRecord, Candle,
+} from '@/lib/types'
+import { formatUSD, uid, generateCandles, getInitialMarket } from '@/lib/utils'
+import TopBar from '@/components/TopBar'
+import CoinSelector from '@/components/CoinSelector'
+import BalancePanel from '@/components/BalancePanel'
+import PricePanel from '@/components/PricePanel'
+import TradePanel from '@/components/TradePanel'
+import CandlestickChart from '@/components/CandlestickChart'
+import HoldingsPanel from '@/components/HoldingsPanel'
+import TradeHistory from '@/components/TradeHistory'
+import styles from './page.module.css'
+
+const INITIAL_USD = 50000
+
+const INITIAL_POSITIONS: Positions = {
+  BTC:  { held: 0, avgBuyPrice: 0 },
+  ETH:  { held: 0, avgBuyPrice: 0 },
+  SOL:  { held: 0, avgBuyPrice: 0 },
+  AVAX: { held: 0, avgBuyPrice: 0 },
+}
+
+export default function DashboardPage() {
+  const [activeCoin, setActiveCoin] = useState<CoinId>('BTC')
+  const [marketData, setMarketData] = useState<MarketDataMap>(getInitialMarket())
+  const [usdBalance, setUsdBalance] = useState(INITIAL_USD)
+  const [positions, setPositions]   = useState<Positions>(INITIAL_POSITIONS)
+  const [trades, setTrades]         = useState<TradeRecord[]>([])
+
+  const coin       = COINS.find(c => c.id === activeCoin)!
+  const market     = marketData[activeCoin]
+  const position   = positions[activeCoin]
+  const totalTrades = trades.length
+
+  // Generate candle data per coin (memoized)
+  const candleMap = useMemo(() => {
+    const map: Record<CoinId, Candle[]> = {} as Record<CoinId, Candle[]>
+    const initial = getInitialMarket()
+    COINS.forEach(c => {
+      map[c.id] = generateCandles(initial[c.id].price, 48)
+    })
+    return map
+  }, [])
+
+  const [candles, setCandles] = useState(candleMap)
+
+  // Simulate live price ticks every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMarketData(prev => {
+        const updated = { ...prev }
+        COINS.forEach(c => {
+          const m = prev[c.id]
+          const volatility = m.price * 0.002
+          const delta = (Math.random() - 0.48) * volatility
+          const newPrice = Math.round((m.price + delta) * 100) / 100
+          const openPrice = candles[c.id][0]?.open || m.price
+          const change = ((newPrice - openPrice) / openPrice) * 100
+
+          updated[c.id] = {
+            ...m,
+            price: newPrice,
+            change24hPct: Math.round(change * 100) / 100,
+            high24h: Math.max(m.high24h, newPrice),
+            low24h: Math.min(m.low24h, newPrice),
+          }
+        })
+        return updated
+      })
+
+      // Append new candle tick
+      setCandles(prev => {
+        const updated = { ...prev }
+        COINS.forEach(c => {
+          const arr = [...prev[c.id]]
+          const last = arr[arr.length - 1]
+          const now = Date.now()
+
+          if (now - last.time > 3600000) {
+            // New candle
+            const currentPrice = marketData[c.id].price
+            arr.push({
+              time: now,
+              open: currentPrice,
+              high: currentPrice,
+              low: currentPrice,
+              close: currentPrice,
+            })
+            if (arr.length > 60) arr.shift()
+          } else {
+            // Update last candle
+            const currentPrice = marketData[c.id].price
+            arr[arr.length - 1] = {
+              ...last,
+              high: Math.max(last.high, currentPrice),
+              low: Math.min(last.low, currentPrice),
+              close: currentPrice,
+            }
+          }
+
+          updated[c.id] = arr
+        })
+        return updated
+      })
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [candles, marketData])
+
+  function handleTrade(mode: OrderMode, amount: number) {
+    const price = marketData[activeCoin].price
+    const cost  = amount * price
+    const fee   = cost * 0.001
+
+    if (mode === 'buy') {
+      const totalCost = cost + fee
+      if (totalCost > usdBalance) return
+
+      setUsdBalance(prev => prev - totalCost)
+      setPositions(prev => {
+        const pos = prev[activeCoin]
+        const newHeld = pos.held + amount
+        const newAvg  = pos.held > 0
+          ? (pos.held * pos.avgBuyPrice + cost) / newHeld
+          : price
+        return {
+          ...prev,
+          [activeCoin]: { held: newHeld, avgBuyPrice: newAvg },
+        }
+      })
+    } else {
+      if (amount > position.held) return
+
+      const proceeds = cost - fee
+      setUsdBalance(prev => prev + proceeds)
+      setPositions(prev => ({
+        ...prev,
+        [activeCoin]: {
+          ...prev[activeCoin],
+          held: prev[activeCoin].held - amount,
+        },
+      }))
+    }
+
+    setTrades(prev => [
+      ...prev,
+      {
+        id: uid(),
+        timestamp: Date.now(),
+        coin: activeCoin,
+        mode,
+        amount,
+        price,
+        total: cost,
+        fee,
+      },
+    ])
+  }
+
+  return (
+    <main className={styles.main}>
+      <div className={styles.dash}>
+        <TopBar />
+        <CoinSelector
+          coins={COINS}
+          activeCoin={activeCoin}
+          marketData={marketData}
+          onSelect={setActiveCoin}
+        />
+
+        <div className={styles.mainGrid}>
+          <BalancePanel
+            usdBalance={usdBalance}
+            positions={positions}
+            marketData={marketData}
+          />
+          <PricePanel market={market} coin={coin} />
+          <TradePanel
+            coin={coin}
+            price={market.price}
+            usdBalance={usdBalance}
+            position={position}
+            onTrade={handleTrade}
+          />
+        </div>
+
+        <div className={styles.bottomGrid}>
+          <CandlestickChart candles={candles[activeCoin]} coin={coin} />
+          <HoldingsPanel
+            position={position}
+            coin={coin}
+            price={market.price}
+            totalTrades={totalTrades}
+          />
+        </div>
+
+        <TradeHistory trades={trades} />
+      </div>
+    </main>
+  )
+}
