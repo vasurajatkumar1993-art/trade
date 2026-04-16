@@ -3,29 +3,28 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 24px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-bar);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  flex-shrink: 0;
 }
 
 .logo {
-  font-family: var(--font-syne);
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--gold);
-  letter-spacing: 0.08em;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
 .badge {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--green);
-  background: rgba(76, 175, 125, 0.1);
-  border: 1px solid rgba(76, 175, 125, 0.25);
-  padding: 4px 10px;
-  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-tertiary);
 }
 
 .dot {
@@ -33,5 +32,5 @@
   height: 6px;
   border-radius: 50%;
   background: var(--green);
-  animation: pulse 1.6s ease-in-out infinite;
+  animation: pulse 2s ease-in-out infinite;
 }

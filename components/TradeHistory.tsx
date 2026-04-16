@@ -11,36 +11,28 @@ export default function TradeHistory({ trades }: Props) {
 
   return (
     <div className={styles.panel}>
-      <div className={styles.label}>Trade history</div>
+      <div className={styles.label}>History</div>
 
       {trades.length === 0 ? (
-        <div className={styles.empty}>
-          No trades yet — place your first order.
-        </div>
+        <div className={styles.empty}>No trades yet</div>
       ) : (
         <div className={styles.list}>
-          <div className={styles.header}>
-            <span>Time</span>
-            <span>Pair</span>
-            <span>Side</span>
-            <span>Amount</span>
-            <span>Price</span>
-            <span>Total</span>
-          </div>
           {[...trades].reverse().map(t => {
             const c = coin(t.coin)
             const d = new Date(t.timestamp)
-            const time = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}`
+            const time = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
             return (
               <div key={t.id} className={styles.row}>
-                <span className={styles.time}>{time}</span>
-                <span style={{ color: c?.color }}>{t.coin}/USD</span>
-                <span className={t.mode === 'buy' ? styles.buy : styles.sell}>
-                  {t.mode.toUpperCase()}
-                </span>
-                <span>{t.amount.toFixed(c?.decimals ?? 5)}</span>
-                <span>{formatUSD(t.price)}</span>
-                <span>{formatUSD(t.total)}</span>
+                <div className={styles.rowLeft}>
+                  <span className={t.mode === 'buy' ? styles.buy : styles.sell}>
+                    {t.mode === 'buy' ? '+' : '-'}{t.amount.toFixed(c?.decimals ?? 5)} {t.coin}
+                  </span>
+                  <span className={styles.time}>{time}</span>
+                </div>
+                <div className={styles.rowRight}>
+                  <span className={styles.total}>{formatUSD(t.total)}</span>
+                  <span className={styles.price}>@ {formatUSD(t.price)}</span>
+                </div>
               </div>
             )
           })}

@@ -19,7 +19,6 @@ export default function PriceAlerts({ alerts, activeCoin, currentPrice, onAddAle
   const [showForm, setShowForm]       = useState(false)
 
   const coinAlerts = alerts.filter(a => a.coin === activeCoin)
-  const coin = COINS.find(c => c.id === activeCoin)!
 
   function handleAdd() {
     const price = parseFloat(targetPrice)
@@ -42,7 +41,7 @@ export default function PriceAlerts({ alerts, activeCoin, currentPrice, onAddAle
       <div className={styles.header}>
         <div className={styles.label}>Alerts</div>
         <button className={styles.addBtn} onClick={() => setShowForm(!showForm)}>
-          {showForm ? '×' : '+'}
+          {showForm ? 'Cancel' : 'New'}
         </button>
       </div>
 
@@ -71,7 +70,6 @@ export default function PriceAlerts({ alerts, activeCoin, currentPrice, onAddAle
                 onChange={e => setTargetPrice(e.target.value)}
                 className={styles.input}
               />
-              <span className={styles.unit}>USD</span>
             </div>
             <button className={styles.setBtn} onClick={handleAdd}>Set</button>
           </div>
@@ -80,21 +78,14 @@ export default function PriceAlerts({ alerts, activeCoin, currentPrice, onAddAle
 
       <div className={styles.list}>
         {coinAlerts.length === 0 && !showForm && (
-          <div className={styles.empty}>No alerts for {activeCoin}</div>
+          <div className={styles.empty}>No alerts set</div>
         )}
         {coinAlerts.map(a => (
-          <div
-            key={a.id}
-            className={`${styles.alertItem} ${a.triggered ? styles.triggered : ''}`}
-          >
-            <div className={styles.alertInfo}>
-              <span className={a.triggered ? styles.bellActive : styles.bell}>
-                {a.triggered ? '🔔' : '○'}
-              </span>
-              <span className={styles.alertText}>
-                {a.condition === 'above' ? '↑' : '↓'} {formatUSD(a.targetPrice)}
-              </span>
-            </div>
+          <div key={a.id} className={`${styles.alertItem} ${a.triggered ? styles.triggered : ''}`}>
+            <span className={styles.alertText}>
+              {a.condition === 'above' ? '↑' : '↓'} {formatUSD(a.targetPrice)}
+            </span>
+            {a.triggered && <span className={styles.triggeredBadge}>Triggered</span>}
             <button className={styles.removeBtn} onClick={() => onRemoveAlert(a.id)}>×</button>
           </div>
         ))}

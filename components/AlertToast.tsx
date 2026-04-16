@@ -12,7 +12,6 @@ interface Props {
 interface Toast {
   id: string
   message: string
-  color: string
   timestamp: number
 }
 
@@ -26,11 +25,10 @@ export default function AlertToast({ alerts }: Props) {
 
     const newToasts = newTriggered.map(a => {
       const coin = COINS.find(c => c.id === a.coin)!
-      const dir = a.condition === 'above' ? 'rose above' : 'dropped below'
+      const dir = a.condition === 'above' ? 'above' : 'below'
       return {
         id: a.id,
-        message: `${coin.id} ${dir} ${formatUSD(a.targetPrice)}`,
-        color: coin.color,
+        message: `${coin.id} crossed ${dir} ${formatUSD(a.targetPrice)}`,
         timestamp: Date.now(),
       }
     })
@@ -44,9 +42,7 @@ export default function AlertToast({ alerts }: Props) {
     setToasts(prev => [...prev, ...newToasts])
 
     const timer = setTimeout(() => {
-      setToasts(prev => prev.filter(t =>
-        Date.now() - t.timestamp < 5000
-      ))
+      setToasts(prev => prev.filter(t => Date.now() - t.timestamp < 5000))
     }, 5000)
 
     return () => clearTimeout(timer)
@@ -57,12 +53,7 @@ export default function AlertToast({ alerts }: Props) {
   return (
     <div className={styles.container}>
       {toasts.map(t => (
-        <div
-          key={t.id}
-          className={styles.toast}
-          style={{ borderLeftColor: t.color }}
-        >
-          <span className={styles.icon}>🔔</span>
+        <div key={t.id} className={styles.toast}>
           <span className={styles.message}>{t.message}</span>
           <button
             className={styles.dismiss}

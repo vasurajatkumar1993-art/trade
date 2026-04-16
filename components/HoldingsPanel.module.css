@@ -1,41 +1,43 @@
 .panel {
-  background: var(--bg-dash);
-  padding: 12px 20px;
-  border-left: 1px solid var(--border);
+  padding: 14px 24px;
 }
 
 .label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
   text-transform: uppercase;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  margin-bottom: 12px;
 }
 
 .grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.item {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 4px;
+  gap: 2px;
 }
 
-.portLabel {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
+.itemLabel {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 400;
   color: var(--text-faint);
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.portVal {
+.itemVal {
   font-family: var(--font-mono);
   font-size: 13px;
+  font-weight: 400;
   color: var(--text-secondary);
-  margin-top: 2px;
 }
 
 .green { color: var(--green); }

@@ -23,15 +23,13 @@ export default function TradePanel({ coin, price, usdBalance, position, onTrade 
   const fee       = total * 0.001
 
   function handleSetPct(pct: number) {
-    const max = mode === 'buy'
-      ? usdBalance / price
-      : position.held
+    const max = mode === 'buy' ? usdBalance / price : position.held
     setAmount(((max * pct) / 100).toFixed(coin.decimals))
   }
 
   function handlePlaceOrder() {
     if (numAmount <= 0) return
-    if (mode === 'buy'  && total + fee > usdBalance) return
+    if (mode === 'buy' && total + fee > usdBalance) return
     if (mode === 'sell' && numAmount > position.held) return
 
     onTrade(mode, numAmount)
@@ -46,36 +44,34 @@ export default function TradePanel({ coin, price, usdBalance, position, onTrade 
 
   return (
     <div className={styles.panel}>
-      <div className={styles.label}>Place order · <span style={{ color: coin.color }}>{coin.id}</span></div>
+      <div className={styles.label}>Order</div>
 
-      <div className={styles.tabRow}>
+      <div className={styles.tabs}>
         <button
-          className={`${styles.tab} ${mode === 'buy' ? styles.buyActive : ''}`}
+          className={`${styles.tab} ${mode === 'buy' ? styles.tabBuyActive : ''}`}
           onClick={() => setMode('buy')}
         >
           Buy
         </button>
         <button
-          className={`${styles.tab} ${mode === 'sell' ? styles.sellActive : ''}`}
+          className={`${styles.tab} ${mode === 'sell' ? styles.tabSellActive : ''}`}
           onClick={() => setMode('sell')}
         >
           Sell
         </button>
       </div>
 
-      <div className={styles.fieldGroup}>
-        <div className={styles.fieldLabel}>
-          Price <span className={styles.hint}>Market</span>
-        </div>
-        <div className={styles.inputWrap}>
+      <div className={styles.field}>
+        <div className={styles.fieldLabel}>Price</div>
+        <div className={styles.inputGroup}>
           <input type="text" readOnly value={price.toLocaleString('en-US', { minimumFractionDigits: 2 })} className={styles.input} />
           <span className={styles.unit}>USD</span>
         </div>
       </div>
 
-      <div className={styles.fieldGroup}>
+      <div className={styles.field}>
         <div className={styles.fieldLabel}>Amount</div>
-        <div className={styles.inputWrap}>
+        <div className={styles.inputGroup}>
           <input
             type="number"
             step={Math.pow(10, -coin.decimals)}
@@ -102,26 +98,16 @@ export default function TradePanel({ coin, price, usdBalance, position, onTrade 
         disabled={!canTrade}
       >
         {flash
-          ? (mode === 'buy' ? 'Order placed ✓' : 'Sold ✓')
+          ? (mode === 'buy' ? 'Filled' : 'Sold')
           : (mode === 'buy' ? `Buy ${coin.id}` : `Sell ${coin.id}`)}
       </button>
 
       <div className={styles.summary}>
-        <div className={styles.summaryRow}>
-          <span>Total</span>
-          <span className={styles.val}>{formatUSD(total)}</span>
-        </div>
-        <div className={styles.summaryRow}>
-          <span>Fee (0.1%)</span>
-          <span className={styles.val}>{formatUSD(fee)}</span>
-        </div>
-        <div className={styles.summaryRow}>
-          <span>Order type</span>
-          <span className={styles.val}>Market</span>
-        </div>
+        <div className={styles.sRow}><span>Total</span><span>{formatUSD(total)}</span></div>
+        <div className={styles.sRow}><span>Fee</span><span>{formatUSD(fee)}</span></div>
         {!canTrade && numAmount > 0 && (
           <div className={styles.warn}>
-            {mode === 'buy' ? 'Insufficient USD balance' : `Insufficient ${coin.id} balance`}
+            Insufficient {mode === 'buy' ? 'USD' : coin.id}
           </div>
         )}
       </div>

@@ -29,7 +29,7 @@ export default function CandlestickChart({ candles, coin }: Props) {
     const H = rect.height
     const PAD_TOP = 16
     const PAD_BOT = 28
-    const PAD_RIGHT = 60
+    const PAD_RIGHT = 56
 
     ctx.clearRect(0, 0, W, H)
 
@@ -40,50 +40,51 @@ export default function CandlestickChart({ candles, coin }: Props) {
 
     const chartW = W - PAD_RIGHT
     const chartH = H - PAD_TOP - PAD_BOT
-    const candleW = Math.max(2, (chartW / candles.length) * 0.65)
+    const candleW = Math.max(2, (chartW / candles.length) * 0.6)
     const gap = chartW / candles.length
 
     function yPos(price: number): number {
       return PAD_TOP + chartH - ((price - minP) / range) * chartH
     }
 
-    // Grid lines
+    // Grid lines — ultra subtle
     const gridSteps = 5
-    ctx.strokeStyle = '#1e2130'
-    ctx.lineWidth = 0.5
-    ctx.font = '10px JetBrains Mono, monospace'
-    ctx.fillStyle = '#4a5068'
+    ctx.font = '10px DM Mono, SF Mono, monospace'
     ctx.textAlign = 'right'
 
     for (let i = 0; i <= gridSteps; i++) {
       const price = minP + (range / gridSteps) * i
       const y = yPos(price)
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)'
+      ctx.lineWidth = 0.5
       ctx.beginPath()
       ctx.moveTo(0, y)
       ctx.lineTo(chartW, y)
       ctx.stroke()
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.25)'
       ctx.fillText(price >= 1000 ? price.toFixed(0) : price.toFixed(2), W - 4, y + 3)
     }
 
     // Time labels
     ctx.textAlign = 'center'
-    ctx.fillStyle = '#4a5068'
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
     const labelInterval = Math.max(1, Math.floor(candles.length / 6))
     for (let i = 0; i < candles.length; i += labelInterval) {
       const x = i * gap + gap / 2
       const date = new Date(candles[i].time)
-      const label = `${date.getHours().toString().padStart(2, '0')}:00`
-      ctx.fillText(label, x, H - 6)
+      ctx.fillText(`${date.getHours().toString().padStart(2, '0')}:00`, x, H - 8)
     }
 
     // Candles
+    const green = '#30d158'
+    const red = '#ff453a'
+
     for (let i = 0; i < candles.length; i++) {
       const c = candles[i]
       const x = i * gap + gap / 2
       const isUp = c.close >= c.open
-
-      const green = '#4caf7d'
-      const red = '#e54848'
       const color = isUp ? green : red
 
       // Wick
@@ -106,8 +107,9 @@ export default function CandlestickChart({ candles, coin }: Props) {
     // Current price line
     const lastPrice = candles[candles.length - 1].close
     const lastY = yPos(lastPrice)
-    ctx.setLineDash([4, 3])
-    ctx.strokeStyle = coin.color
+
+    ctx.setLineDash([3, 3])
+    ctx.strokeStyle = 'rgba(41, 151, 255, 0.5)'
     ctx.lineWidth = 1
     ctx.beginPath()
     ctx.moveTo(0, lastY)
@@ -116,15 +118,21 @@ export default function CandlestickChart({ candles, coin }: Props) {
     ctx.setLineDash([])
 
     // Price badge
-    ctx.fillStyle = coin.color
-    const badgeW = 56
-    ctx.fillRect(chartW + 2, lastY - 10, badgeW, 20)
-    ctx.fillStyle = '#0d0f14'
+    const badgeW = 52
+    const badgeH = 20
+    const badgeX = chartW + 2
+    const badgeY = lastY - badgeH / 2
+    ctx.fillStyle = '#2997ff'
+    ctx.beginPath()
+    ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 4)
+    ctx.fill()
+
+    ctx.fillStyle = '#ffffff'
     ctx.textAlign = 'center'
-    ctx.font = 'bold 10px JetBrains Mono, monospace'
+    ctx.font = '500 10px DM Mono, SF Mono, monospace'
     ctx.fillText(
       lastPrice >= 1000 ? lastPrice.toFixed(0) : lastPrice.toFixed(2),
-      chartW + 2 + badgeW / 2,
+      badgeX + badgeW / 2,
       lastY + 4
     )
 
@@ -133,9 +141,7 @@ export default function CandlestickChart({ candles, coin }: Props) {
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
-        <div className={styles.label}>
-          <span style={{ color: coin.color }}>●</span> {coin.id}/USD · 1H
-        </div>
+        <div className={styles.label}>{coin.id}/USD</div>
         <div className={styles.timeframes}>
           <span className={styles.tfActive}>1H</span>
           <span className={styles.tf}>4H</span>

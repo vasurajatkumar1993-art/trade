@@ -22,16 +22,12 @@ export default function CoinSelector({ coins, activeCoin, marketData, onSelect }
             key={c.id}
             className={`${styles.coin} ${active ? styles.active : ''}`}
             onClick={() => onSelect(c.id)}
-            style={active ? { borderColor: c.color } : undefined}
           >
-            <div className={styles.top}>
-              <span className={styles.symbol} style={{ color: c.color }}>●</span>
-              <span className={styles.name}>{c.id}</span>
-              <span className={`${styles.pct} ${isUp ? styles.up : styles.down}`}>
-                {isUp ? '+' : ''}{m.change24hPct.toFixed(2)}%
-              </span>
-            </div>
-            <div className={styles.price}>{formatUSD(m.price)}</div>
+            <span className={styles.name}>{c.id}</span>
+            <span className={styles.price}>{formatUSD(m.price)}</span>
+            <span className={`${styles.pct} ${isUp ? styles.up : styles.down}`}>
+              {isUp ? '+' : ''}{m.change24hPct.toFixed(2)}%
+            </span>
           </button>
         )
       })}

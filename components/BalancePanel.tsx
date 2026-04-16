@@ -16,19 +16,17 @@ export default function BalancePanel({ usdBalance, positions, marketData }: Prop
 
   return (
     <div className={styles.panel}>
-      <div className={styles.label}>Portfolio balance</div>
+      <div className={styles.label}>Portfolio</div>
       <div className={styles.amount}>{formatUSD(total)}</div>
       <div className={styles.sub}>
-        <div className={styles.item}>
-          USD <span>{formatUSD(usdBalance)}</span>
-        </div>
+        <span className={styles.item}>Cash {formatUSD(usdBalance)}</span>
         {COINS.map(c => {
           const held = positions[c.id].held
           if (held <= 0) return null
           return (
-            <div key={c.id} className={styles.item}>
-              {c.id} <span style={{ color: c.color }}>{formatCrypto(held, c.decimals)}</span>
-            </div>
+            <span key={c.id} className={styles.item}>
+              {c.id} {formatCrypto(held, c.decimals)}
+            </span>
           )
         })}
       </div>

@@ -1,87 +1,81 @@
 .panel {
-  background: var(--bg-dash);
-  padding: 16px 20px;
+  padding: 20px;
   flex: 1;
   overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #1e2130 transparent;
+  scrollbar-width: none;
 }
+
+.panel::-webkit-scrollbar { display: none; }
 
 .label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 }
 
-.tabRow {
+.tabs {
   display: flex;
-  gap: 2px;
-  background: var(--bg-deep);
-  border-radius: 6px;
+  gap: 0;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
   padding: 3px;
   margin-bottom: 20px;
+  border: 1px solid var(--border-subtle);
 }
 
 .tab {
   flex: 1;
-  padding: 7px;
+  padding: 8px;
   text-align: center;
-  font-family: var(--font-syne);
-  font-size: 12px;
+  font-family: var(--font-sans);
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.06em;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   border: none;
   background: transparent;
-  color: var(--text-muted);
-  transition: all 0.15s;
+  color: var(--text-tertiary);
+  transition: all var(--transition);
 }
 
-.buyActive {
-  background: rgba(76, 175, 125, 0.18);
-  color: var(--green);
+.tabBuyActive {
+  background: var(--green);
+  color: #000;
 }
 
-.sellActive {
-  background: rgba(229, 72, 72, 0.18);
-  color: var(--red);
+.tabSellActive {
+  background: var(--red);
+  color: #fff;
 }
 
-.fieldGroup {
-  margin-bottom: 14px;
+.field {
+  margin-bottom: 12px;
 }
 
 .fieldLabel {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  color: var(--text-muted);
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-tertiary);
   margin-bottom: 6px;
-  display: flex;
-  justify-content: space-between;
 }
 
-.hint {
-  color: var(--text-faint);
-}
-
-.inputWrap {
+.inputGroup {
   display: flex;
   align-items: center;
-  background: var(--bg-deep);
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
   padding: 0 12px;
-  transition: border-color 0.15s;
+  transition: border-color var(--transition);
 }
 
-.inputWrap:focus-within {
-  border-color: rgba(240, 193, 75, 0.25);
+.inputGroup:focus-within {
+  border-color: var(--accent);
 }
 
 .input {
@@ -91,6 +85,7 @@
   outline: none;
   font-family: var(--font-mono);
   font-size: 14px;
+  font-weight: 400;
   color: var(--text-primary);
   padding: 10px 0;
 }
@@ -108,76 +103,87 @@
 .pctRow {
   display: flex;
   gap: 6px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .pctBtn {
   flex: 1;
-  padding: 5px;
-  border: 1px solid var(--border);
-  background: var(--bg-deep);
-  border-radius: 4px;
+  padding: 6px;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  border-radius: 6px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-muted);
+  font-size: 11px;
+  color: var(--text-tertiary);
   cursor: pointer;
   text-align: center;
-  transition: all 0.15s;
+  transition: all var(--transition);
 }
 
 .pctBtn:hover {
-  border-color: rgba(240, 193, 75, 0.25);
-  color: var(--gold);
+  border-color: var(--border-strong);
+  color: var(--text-secondary);
+  background: var(--bg-hover);
 }
 
 .orderBtn {
   width: 100%;
   padding: 14px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   border: none;
-  font-family: var(--font-syne);
+  font-family: var(--font-sans);
   font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   cursor: pointer;
-  text-transform: uppercase;
-  transition: all 0.15s;
+  transition: all var(--transition);
 }
 
 .orderBtn:disabled {
-  opacity: 0.4;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
-.buyBtn  { background: var(--green); color: #031a0e; }
-.sellBtn { background: var(--red);   color: #1a0303; }
-
-.orderBtn:not(:disabled):hover  { filter: brightness(1.12); }
-.orderBtn:not(:disabled):active { transform: scale(0.98); }
-
-.summary {
-  margin-top: 14px;
-  padding: 10px;
-  background: var(--bg-deep);
-  border-radius: 6px;
-  border: 1px solid var(--border);
+.buyBtn {
+  background: var(--green);
+  color: #000;
 }
 
-.summaryRow {
+.sellBtn {
+  background: var(--red);
+  color: #fff;
+}
+
+.orderBtn:not(:disabled):hover {
+  filter: brightness(1.1);
+  transform: scale(1.01);
+}
+
+.orderBtn:not(:disabled):active {
+  transform: scale(0.99);
+}
+
+.summary {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.sRow {
   display: flex;
   justify-content: space-between;
   font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-muted);
-  padding: 3px 0;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  padding: 2px 0;
 }
-
-.val { color: var(--text-secondary); }
 
 .warn {
   margin-top: 8px;
-  font-family: var(--font-mono);
-  font-size: 10px;
+  font-family: var(--font-sans);
+  font-size: 11px;
   color: var(--red);
   text-align: center;
 }

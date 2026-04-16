@@ -1,6 +1,5 @@
 .panel {
-  background: var(--bg-dash);
-  padding: 12px 20px 0;
+  padding: 14px 24px 0;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -15,14 +14,10 @@
 }
 
 .label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .timeframes {
@@ -32,16 +27,21 @@
 
 .tf, .tfActive {
   font-family: var(--font-mono);
-  font-size: 10px;
-  padding: 3px 8px;
-  border-radius: 3px;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 6px;
   cursor: pointer;
-  color: var(--text-muted);
+  color: var(--text-tertiary);
+  transition: all var(--transition);
+}
+
+.tf:hover {
+  color: var(--text-secondary);
 }
 
 .tfActive {
-  background: rgba(240, 193, 75, 0.12);
-  color: var(--gold);
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
 
 .canvasWrap {

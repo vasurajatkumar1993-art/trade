@@ -1,27 +1,27 @@
 import type { Metadata } from 'next'
-import { JetBrains_Mono, Syne } from 'next/font/google'
+import { Inter, DM_Mono } from 'next/font/google'
 import './globals.css'
 
-const syne = Syne({
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '500', '700'],
-  variable: '--font-syne',
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-sans',
 })
 
-const jetbrainsMono = JetBrains_Mono({
+const dmMono = DM_Mono({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['300', '400', '500'],
   variable: '--font-mono',
 })
 
 export const metadata: Metadata = {
-  title: 'TradeX — Bitcoin Trading Simulator',
-  description: 'Paper trading simulator for BTC/USD',
+  title: 'TradeX — Paper Trading',
+  description: 'A premium paper trading simulator',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${syne.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${dmMono.variable}`}>
       <body>{children}</body>
     </html>
   )
