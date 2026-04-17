@@ -1,3 +1,5 @@
+'use client'
+
 import { StockTicker } from '@/lib/types'
 import { formatCompact } from '@/lib/utils'
 import styles from './GainersPlus10.module.css'
