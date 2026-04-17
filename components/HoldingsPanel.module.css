@@ -4,7 +4,7 @@
 
 .label {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.04em;
   color: var(--text-tertiary);
@@ -26,7 +26,7 @@
 
 .itemLabel {
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   color: var(--text-faint);
   text-transform: uppercase;
@@ -35,7 +35,7 @@
 
 .itemVal {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--text-secondary);
 }

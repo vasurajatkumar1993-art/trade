@@ -1,0 +1,125 @@
+.panel {
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0 0 6px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.header span:nth-child(2),
+.header span:nth-child(3) {
+  text-align: right;
+}
+
+.book {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.book::-webkit-scrollbar { display: none; }
+
+.asks, .bids {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 3px 0;
+  position: relative;
+  line-height: 1.6;
+}
+
+.depthBarBid, .depthBarAsk {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.depthBarBid {
+  left: 0;
+  background: rgba(48, 209, 88, 0.06);
+}
+
+.depthBarAsk {
+  right: 0;
+  background: rgba(255, 69, 58, 0.06);
+}
+
+.bidPrice {
+  color: var(--green);
+  position: relative;
+  font-weight: 500;
+}
+
+.askPrice {
+  color: var(--red);
+  position: relative;
+  font-weight: 500;
+}
+
+.size {
+  text-align: right;
+  color: var(--text-secondary);
+  position: relative;
+}
+
+.total {
+  text-align: right;
+  color: var(--text-tertiary);
+  position: relative;
+}
+
+.spread {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  margin: 2px 0;
+}
+
+.spreadPrice {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.spreadLabel {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+}

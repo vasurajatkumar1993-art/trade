@@ -1,15 +1,19 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
-import { Candle, CoinConfig } from '@/lib/types'
+import { Candle, CoinConfig, Timeframe } from '@/lib/types'
 import styles from './CandlestickChart.module.css'
 
 interface Props {
   candles: Candle[]
   coin: CoinConfig
+  timeframe: Timeframe
+  onTimeframeChange: (tf: Timeframe) => void
 }
 
-export default function CandlestickChart({ candles, coin }: Props) {
+const TIMEFRAMES: Timeframe[] = ['1m', '1H', '4H', '1D']
+
+export default function CandlestickChart({ candles, coin, timeframe, onTimeframeChange }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -47,9 +51,9 @@ export default function CandlestickChart({ candles, coin }: Props) {
       return PAD_TOP + chartH - ((price - minP) / range) * chartH
     }
 
-    // Grid lines — ultra subtle
+    // Grid
     const gridSteps = 5
-    ctx.font = '10px DM Mono, SF Mono, monospace'
+    ctx.font = '12px DM Mono, SF Mono, monospace'
     ctx.textAlign = 'right'
 
     for (let i = 0; i <= gridSteps; i++) {
@@ -63,18 +67,24 @@ export default function CandlestickChart({ candles, coin }: Props) {
       ctx.lineTo(chartW, y)
       ctx.stroke()
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.25)'
-      ctx.fillText(price >= 1000 ? price.toFixed(0) : price.toFixed(2), W - 4, y + 3)
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.28)'
+      ctx.fillText(price >= 1000 ? price.toFixed(0) : price.toFixed(2), W - 4, y + 4)
     }
 
     // Time labels
     ctx.textAlign = 'center'
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.22)'
     const labelInterval = Math.max(1, Math.floor(candles.length / 6))
     for (let i = 0; i < candles.length; i += labelInterval) {
       const x = i * gap + gap / 2
       const date = new Date(candles[i].time)
-      ctx.fillText(`${date.getHours().toString().padStart(2, '0')}:00`, x, H - 8)
+      let label: string
+      if (timeframe === '1m' || timeframe === '1H') {
+        label = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+      } else {
+        label = `${date.getDate()}/${date.getMonth() + 1}`
+      }
+      ctx.fillText(label, x, H - 8)
     }
 
     // Candles
@@ -87,7 +97,6 @@ export default function CandlestickChart({ candles, coin }: Props) {
       const isUp = c.close >= c.open
       const color = isUp ? green : red
 
-      // Wick
       ctx.strokeStyle = color
       ctx.lineWidth = 1
       ctx.beginPath()
@@ -95,7 +104,6 @@ export default function CandlestickChart({ candles, coin }: Props) {
       ctx.lineTo(x, yPos(c.low))
       ctx.stroke()
 
-      // Body
       const bodyTop = yPos(Math.max(c.open, c.close))
       const bodyBot = yPos(Math.min(c.open, c.close))
       const bodyH = Math.max(1, bodyBot - bodyTop)
@@ -119,7 +127,7 @@ export default function CandlestickChart({ candles, coin }: Props) {
 
     // Price badge
     const badgeW = 52
-    const badgeH = 20
+    const badgeH = 22
     const badgeX = chartW + 2
     const badgeY = lastY - badgeH / 2
     ctx.fillStyle = '#2997ff'
@@ -129,23 +137,29 @@ export default function CandlestickChart({ candles, coin }: Props) {
 
     ctx.fillStyle = '#ffffff'
     ctx.textAlign = 'center'
-    ctx.font = '500 10px DM Mono, SF Mono, monospace'
+    ctx.font = '500 12px DM Mono, SF Mono, monospace'
     ctx.fillText(
       lastPrice >= 1000 ? lastPrice.toFixed(0) : lastPrice.toFixed(2),
       badgeX + badgeW / 2,
       lastY + 4
     )
 
-  }, [candles, coin])
+  }, [candles, coin, timeframe])
 
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
         <div className={styles.label}>{coin.id}/USD</div>
         <div className={styles.timeframes}>
-          <span className={styles.tfActive}>1H</span>
-          <span className={styles.tf}>4H</span>
-          <span className={styles.tf}>1D</span>
+          {TIMEFRAMES.map(tf => (
+            <button
+              key={tf}
+              className={`${styles.tf} ${tf === timeframe ? styles.tfActive : ''}`}
+              onClick={() => onTimeframeChange(tf)}
+            >
+              {tf}
+            </button>
+          ))}
         </div>
       </div>
       <div className={styles.canvasWrap}>

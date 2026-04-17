@@ -62,3 +62,28 @@ export interface PriceAlert {
   triggered: boolean
   createdAt: number
 }
+
+export interface Level2Entry {
+  price: number
+  size: number
+  total: number
+}
+
+export interface Level2Data {
+  bids: Level2Entry[]
+  asks: Level2Entry[]
+}
+
+export type Level2Map = Record<CoinId, Level2Data>
+
+export interface TimeSaleEntry {
+  id: string
+  time: number
+  price: number
+  size: number
+  side: 'buy' | 'sell'
+}
+
+export type TimeSalesMap = Record<CoinId, TimeSaleEntry[]>
+
+export type Timeframe = '1m' | '1H' | '4H' | '1D'

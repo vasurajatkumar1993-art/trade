@@ -2,10 +2,14 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import {
-  OrderMode, CoinId, COINS,
-  Positions, MarketDataMap, TradeRecord, Candle, PriceAlert,
+  OrderMode, CoinId, COINS, Timeframe,
+  Positions, MarketDataMap, TradeRecord, Candle,
+  PriceAlert, Level2Map, TimeSalesMap,
 } from '@/lib/types'
-import { uid, generateCandles, getInitialMarket } from '@/lib/utils'
+import {
+  uid, generateCandles, generateLevel2, generateTimeSales,
+  tickLevel2, addTimeSale, getInitialMarket, TF_INTERVALS,
+} from '@/lib/utils'
 import TopBar from '@/components/TopBar'
 import CoinSelector from '@/components/CoinSelector'
 import BalancePanel from '@/components/BalancePanel'
@@ -16,6 +20,8 @@ import HoldingsPanel from '@/components/HoldingsPanel'
 import TradeHistory from '@/components/TradeHistory'
 import PriceAlerts from '@/components/PriceAlerts'
 import AlertToast from '@/components/AlertToast'
+import Level2Book from '@/components/Level2Book'
+import TimeSales from '@/components/TimeSales'
 import styles from './page.module.css'
 
 const INITIAL_USD = 50000
@@ -29,6 +35,7 @@ const INITIAL_POSITIONS: Positions = {
 
 export default function DashboardPage() {
   const [activeCoin, setActiveCoin] = useState<CoinId>('BTC')
+  const [timeframe, setTimeframe]   = useState<Timeframe>('1H')
   const [marketData, setMarketData] = useState<MarketDataMap>(getInitialMarket())
   const [usdBalance, setUsdBalance] = useState(INITIAL_USD)
   const [positions, setPositions]   = useState<Positions>(INITIAL_POSITIONS)
@@ -40,19 +47,38 @@ export default function DashboardPage() {
   const position   = positions[activeCoin]
   const totalTrades = trades.length
 
-  // Generate candle data per coin (memoized)
-  const candleMap = useMemo(() => {
-    const map: Record<CoinId, Candle[]> = {} as Record<CoinId, Candle[]>
+  // Generate candle data per coin per timeframe
+  const [candles, setCandles] = useState<Record<CoinId, Record<Timeframe, Candle[]>>>(() => {
     const initial = getInitialMarket()
+    const map = {} as Record<CoinId, Record<Timeframe, Candle[]>>
     COINS.forEach(c => {
-      map[c.id] = generateCandles(initial[c.id].price, 48)
+      map[c.id] = {
+        '1m': generateCandles(initial[c.id].price, 120, '1m'),
+        '1H': generateCandles(initial[c.id].price, 48, '1H'),
+        '4H': generateCandles(initial[c.id].price, 30, '4H'),
+        '1D': generateCandles(initial[c.id].price, 30, '1D'),
+      }
     })
     return map
-  }, [])
+  })
 
-  const [candles, setCandles] = useState(candleMap)
+  // Level 2 data per coin
+  const [level2, setLevel2] = useState<Level2Map>(() => {
+    const initial = getInitialMarket()
+    const map = {} as Level2Map
+    COINS.forEach(c => { map[c.id] = generateLevel2(initial[c.id].price) })
+    return map
+  })
 
-  // Simulate live price ticks every 3 seconds
+  // Time & Sales data per coin
+  const [timeSales, setTimeSales] = useState<TimeSalesMap>(() => {
+    const initial = getInitialMarket()
+    const map = {} as TimeSalesMap
+    COINS.forEach(c => { map[c.id] = generateTimeSales(initial[c.id].price) })
+    return map
+  })
+
+  // Simulate live ticks every 2 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setMarketData(prev => {
@@ -62,7 +88,7 @@ export default function DashboardPage() {
           const volatility = m.price * 0.002
           const delta = (Math.random() - 0.48) * volatility
           const newPrice = Math.round((m.price + delta) * 100) / 100
-          const openPrice = candles[c.id][0]?.open || m.price
+          const openPrice = candles[c.id]['1D'][0]?.open || m.price
           const change = ((newPrice - openPrice) / openPrice) * 100
 
           updated[c.id] = {
@@ -76,44 +102,69 @@ export default function DashboardPage() {
         return updated
       })
 
-      // Update candles
+      // Update candles for all timeframes
       setCandles(prev => {
         const updated = { ...prev }
         COINS.forEach(c => {
-          const arr = [...prev[c.id]]
-          const last = arr[arr.length - 1]
-          const now = Date.now()
+          const coinCandles = { ...prev[c.id] }
+          const currentPrice = marketData[c.id].price
 
-          if (now - last.time > 3600000) {
-            const currentPrice = marketData[c.id].price
-            arr.push({
-              time: now,
-              open: currentPrice,
-              high: currentPrice,
-              low: currentPrice,
-              close: currentPrice,
-            })
-            if (arr.length > 60) arr.shift()
-          } else {
-            const currentPrice = marketData[c.id].price
-            arr[arr.length - 1] = {
-              ...last,
-              high: Math.max(last.high, currentPrice),
-              low: Math.min(last.low, currentPrice),
-              close: currentPrice,
+          const tfs: Timeframe[] = ['1m', '1H', '4H', '1D']
+          tfs.forEach(tf => {
+            const arr = [...coinCandles[tf]]
+            const last = arr[arr.length - 1]
+            const now = Date.now()
+            const tfInterval = TF_INTERVALS[tf]
+
+            if (now - last.time > tfInterval) {
+              arr.push({
+                time: now,
+                open: currentPrice,
+                high: currentPrice,
+                low: currentPrice,
+                close: currentPrice,
+              })
+              const maxLen = tf === '1m' ? 180 : tf === '1H' ? 60 : 40
+              if (arr.length > maxLen) arr.shift()
+            } else {
+              arr[arr.length - 1] = {
+                ...last,
+                high: Math.max(last.high, currentPrice),
+                low: Math.min(last.low, currentPrice),
+                close: currentPrice,
+              }
             }
-          }
+            coinCandles[tf] = arr
+          })
 
-          updated[c.id] = arr
+          updated[c.id] = coinCandles
         })
         return updated
       })
-    }, 3000)
+
+      // Tick Level 2
+      setLevel2(prev => {
+        const updated = { ...prev }
+        COINS.forEach(c => {
+          updated[c.id] = tickLevel2(prev[c.id], marketData[c.id].price)
+        })
+        return updated
+      })
+
+      // Add Time & Sale entries
+      setTimeSales(prev => {
+        const updated = { ...prev }
+        COINS.forEach(c => {
+          updated[c.id] = addTimeSale(prev[c.id], marketData[c.id].price)
+        })
+        return updated
+      })
+    }, 2000)
 
     return () => clearInterval(interval)
   }, [candles, marketData])
 
-  // Check price alerts on every market update
+  // Check price alerts
   useEffect(() => {
     setAlerts(prev => {
       let changed = false
@@ -201,23 +252,39 @@ export default function DashboardPage() {
           marketData={marketData}
           onSelect={setActiveCoin}
         />
+        <div className={styles.infoRow}>
+          <BalancePanel
+            usdBalance={usdBalance}
+            positions={positions}
+            marketData={marketData}
+          />
+          <PricePanel market={market} coin={coin} />
+        </div>
 
         <div className={styles.bodyGrid}>
-          {/* Left column: info row + chart + bottom row */}
+          {/* Left: Level 2 + Time & Sales */}
           <div className={styles.leftCol}>
-            <div className={styles.infoRow}>
-              <BalancePanel
-                usdBalance={usdBalance}
-                positions={positions}
-                marketData={marketData}
+            <div className={styles.l2Area}>
+              <Level2Book
+                data={level2[activeCoin]}
+                currentPrice={market.price}
               />
-              <PricePanel market={market} coin={coin} />
             </div>
+            <div className={styles.tsArea}>
+              <TimeSales entries={timeSales[activeCoin]} />
+            </div>
+          </div>
 
+          {/* Center: Chart + Trade History + Holdings */}
+          <div className={styles.centerCol}>
             <div className={styles.chartArea}>
-              <CandlestickChart candles={candles[activeCoin]} coin={coin} />
+              <CandlestickChart
+                candles={candles[activeCoin][timeframe]}
+                coin={coin}
+                timeframe={timeframe}
+                onTimeframeChange={setTimeframe}
+              />
             </div>
-
             <div className={styles.bottomRow}>
               <TradeHistory trades={trades} />
               <HoldingsPanel
@@ -229,7 +296,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Right column: trade panel + alerts */}
+          {/* Right: Order + Alerts */}
           <div className={styles.rightCol}>
             <TradePanel
               coin={coin}

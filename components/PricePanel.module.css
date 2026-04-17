@@ -4,7 +4,7 @@
 
 .label {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.04em;
   color: var(--text-tertiary);
@@ -20,7 +20,7 @@
 
 .price {
   font-family: var(--font-sans);
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 300;
   letter-spacing: -0.03em;
   color: var(--text-primary);
@@ -29,7 +29,7 @@
 
 .badge {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
   padding: 2px 8px;
   border-radius: 4px;
@@ -50,6 +50,6 @@
   display: flex;
   gap: 20px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-tertiary);
 }

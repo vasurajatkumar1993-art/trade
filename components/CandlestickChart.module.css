@@ -15,7 +15,7 @@
 
 .label {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text-secondary);
 }
@@ -23,14 +23,20 @@
 .timeframes {
   display: flex;
   gap: 2px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  padding: 2px;
+  border: 1px solid var(--border-subtle);
 }
 
 .tf, .tfActive {
   font-family: var(--font-mono);
-  font-size: 11px;
-  padding: 3px 10px;
+  font-size: 12px;
+  padding: 4px 12px;
   border-radius: 6px;
   cursor: pointer;
+  border: none;
+  background: transparent;
   color: var(--text-tertiary);
   transition: all var(--transition);
 }

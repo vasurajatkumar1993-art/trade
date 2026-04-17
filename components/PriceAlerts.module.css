@@ -13,7 +13,7 @@
 
 .label {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.04em;
   color: var(--text-tertiary);
@@ -22,7 +22,7 @@
 
 .addBtn {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--accent);
   background: none;
@@ -54,7 +54,7 @@
   padding: 5px;
   text-align: center;
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   border-radius: 5px;
   cursor: pointer;
@@ -110,7 +110,7 @@
   background: var(--accent);
   color: #fff;
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition);
@@ -131,7 +131,7 @@
 
 .empty {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-faint);
   text-align: center;
   padding: 8px 0;
@@ -154,14 +154,14 @@
 
 .alertText {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
   flex: 1;
 }
 
 .triggeredBadge {
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--accent);
   background: rgba(41, 151, 255, 0.1);
