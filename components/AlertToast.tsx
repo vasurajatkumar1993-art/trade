@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { PriceAlert, COINS } from '@/lib/types'
+import { PriceAlert } from '@/lib/types'
 import { formatUSD } from '@/lib/utils'
 import styles from './AlertToast.module.css'
 
@@ -24,11 +24,10 @@ export default function AlertToast({ alerts }: Props) {
     if (newTriggered.length === 0) return
 
     const newToasts = newTriggered.map(a => {
-      const coin = COINS.find(c => c.id === a.coin)!
       const dir = a.condition === 'above' ? 'above' : 'below'
       return {
         id: a.id,
-        message: `${coin.id} crossed ${dir} ${formatUSD(a.targetPrice)}`,
+        message: `${a.symbol} crossed ${dir} ${formatUSD(a.targetPrice)}`,
         timestamp: Date.now(),
       }
     })
