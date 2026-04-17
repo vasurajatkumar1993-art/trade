@@ -1,0 +1,100 @@
+.panel {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 56px 64px 60px 50px 54px 60px 60px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0 4px 4px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.header span:nth-child(n+2) { text-align: right; }
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar { display: none; }
+
+.empty {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-faint);
+  text-align: center;
+  padding: 20px 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 56px 64px 60px 50px 54px 60px 60px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 5px 4px;
+  border-bottom: 1px solid var(--border-subtle);
+  line-height: 1.6;
+  cursor: pointer;
+  transition: all var(--transition);
+  border-left: 2px solid transparent;
+}
+
+.row:hover {
+  background: var(--bg-hover);
+}
+
+.selected {
+  background: rgba(41, 151, 255, 0.06);
+  border-left-color: var(--accent);
+}
+
+.sym {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.price { text-align: right; color: var(--text-secondary); }
+.pct   { text-align: right; color: var(--green); font-weight: 500; }
+
+.rvol    { text-align: right; color: var(--text-secondary); }
+.rvolHot { color: var(--gold); font-weight: 500; }
+
+.floatVal { text-align: right; color: var(--text-tertiary); font-size: 11px; }
+.avgVol   { text-align: right; color: var(--text-tertiary); font-size: 11px; }
+.vol      { text-align: right; color: var(--text-secondary); }

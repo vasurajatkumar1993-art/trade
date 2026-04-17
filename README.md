@@ -1,6 +1,6 @@
-# TradeX — Bitcoin Trading Simulator
+# TradeX — Nasdaq Momentum Dashboard
 
-A paper trading dashboard built with Next.js 14, React, and TypeScript.
+A real-time Nasdaq momentum trading dashboard built with Next.js 14.
 
 ## Getting Started
 
@@ -9,49 +9,28 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000)
 
-## Project Structure
+## Layout
 
 ```
-tradex/
-├── app/
-│   ├── layout.tsx        # Root layout (fonts, metadata)
-│   ├── globals.css       # Global styles & CSS variables
-│   ├── page.tsx          # Main dashboard page (state lives here)
-│   └── page.module.css   # Dashboard layout grid
-├── components/
-│   ├── TopBar.tsx         # Logo + paper mode badge
-│   ├── BalancePanel.tsx   # Total portfolio value (USD + BTC)
-│   ├── PricePanel.tsx     # BTC/USD price + 24h stats
-│   ├── TradePanel.tsx     # Buy/Sell order form
-│   ├── SparklineChart.tsx # 24h price sparkline (SVG)
-│   └── HoldingsPanel.tsx  # BTC position + unrealised P&L
-└── lib/
-    ├── types.ts           # Shared TypeScript interfaces
-    └── utils.ts           # formatUSD, formatBTC helpers
+┌─────────────────────────────────────────────────────┐
+│  TopBar                                             │
+├──────────┬───────────┬───────────┬──────────────────┤
+│  News    │  Top      │  10%+     │  Stock Quote     │
+│  Window  │  Gainers  │  Movers   │  (selected)      │
+│          │           │ (click!)  │                  │
+├──────────┴───────────┴───────────┴──────────────────┤
+│  1 Min Chart    │  5 Min Chart    │  Daily Chart    │
+│  (with volume)  │  (with volume)  │  (with volume)  │
+└─────────────────────────────────────────────────────┘
 ```
 
-## State Architecture
+## Features
 
-All state lives in `app/page.tsx` and flows down as props:
-
-| State        | Type        | Description                        |
-|-------------|-------------|------------------------------------|
-| `usdBalance` | `number`    | Available USD cash                 |
-| `position`   | `Position`  | BTC held, avg buy price, trade count |
-| `market`     | `MarketData`| Price, 24h change, high/low/volume |
-
-## Trade Logic
-
-- **Buy**: deducts `(btcAmount × price) + fee` from USD, adds BTC, recalculates avg price
-- **Sell**: adds `(btcAmount × price) − fee` to USD, removes BTC
-- **Fee**: 0.1% per trade
-- Buttons are disabled when balance is insufficient
-
-## Next Steps
-
-- Connect a real BTC price API (e.g. CoinGecko, Binance WebSocket)
-- Persist state with `localStorage` or a database
-- Add a trade history log
-- Build out a live candlestick chart with a charting library
+- **News Window**: Live-updating stock news with source, timestamp, and ticker tags
+- **Top Gainers**: Top 10 Nasdaq movers with change%, AH%, PM%, volume, float
+- **10%+ Movers**: High-conviction setups with RVOL, float, avg volume, current volume
+- **Stock Quote**: Detailed quote panel for the selected ticker
+- **Triple Charts**: 1-min, 5-min, and Daily candlestick charts with volume bars
+- **Live Simulation**: 15 Nasdaq stocks ticking every 2 seconds

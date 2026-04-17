@@ -1,39 +1,28 @@
-export type OrderMode = 'buy' | 'sell'
+// ─── Nasdaq Stock Types ───
 
-export type CoinId = 'BTC' | 'ETH' | 'SOL' | 'AVAX'
-
-export interface CoinConfig {
-  id: CoinId
+export interface StockTicker {
+  symbol: string
   name: string
-  color: string
-  decimals: number
-}
-
-export const COINS: CoinConfig[] = [
-  { id: 'BTC',  name: 'Bitcoin',   color: '#f0c14b', decimals: 5 },
-  { id: 'ETH',  name: 'Ethereum',  color: '#627eea', decimals: 4 },
-  { id: 'SOL',  name: 'Solana',    color: '#9945ff', decimals: 2 },
-  { id: 'AVAX', name: 'Avalanche', color: '#e84142', decimals: 2 },
-]
-
-export interface Position {
-  held: number
-  avgBuyPrice: number
-  realisedPnL: number
-  totalQty: number
-}
-
-export type Positions = Record<CoinId, Position>
-
-export interface MarketData {
   price: number
-  change24hPct: number
-  high24h: number
-  low24h: number
-  volume24h: string
+  prevClose: number
+  changePct: number
+  afterHoursPct: number
+  preMarketPct: number
+  volume: number
+  avgVolume30d: number
+  relativeVolume: number
+  float: string
+  marketCap: string
 }
 
-export type MarketDataMap = Record<CoinId, MarketData>
+export interface NewsItem {
+  id: string
+  time: number
+  headline: string
+  source: string
+  symbols: string[]
+  isHot: boolean
+}
 
 export interface Candle {
   time: number
@@ -44,27 +33,9 @@ export interface Candle {
   volume: number
 }
 
-export interface TradeRecord {
-  id: string
-  timestamp: number
-  coin: CoinId
-  mode: OrderMode
-  amount: number
-  price: number
-  total: number
-  fee: number
-}
+export type ChartTimeframe = '1m' | '5m' | '1D'
 
-export type AlertCondition = 'above' | 'below'
-
-export interface PriceAlert {
-  id: string
-  coin: CoinId
-  condition: AlertCondition
-  targetPrice: number
-  triggered: boolean
-  createdAt: number
-}
+// ─── Level 2 ───
 
 export interface Level2Entry {
   price: number
@@ -78,7 +49,7 @@ export interface Level2Data {
   asks: Level2Entry[]
 }
 
-export type Level2Map = Record<CoinId, Level2Data>
+// ─── Time & Sales ───
 
 export interface TimeSaleEntry {
   id: string
@@ -88,6 +59,35 @@ export interface TimeSaleEntry {
   side: 'buy' | 'sell'
 }
 
-export type TimeSalesMap = Record<CoinId, TimeSaleEntry[]>
+// ─── Position & Order ───
 
-export type Timeframe = '1m' | '1H' | '4H' | '1D'
+export type OrderMode = 'buy' | 'sell'
+
+export interface Position {
+  held: number
+  avgBuyPrice: number
+  realisedPnL: number
+  totalQty: number
+}
+
+export interface TradeRecord {
+  id: string
+  timestamp: number
+  symbol: string
+  mode: OrderMode
+  amount: number
+  price: number
+  total: number
+  fee: number
+}
+
+export type AlertCondition = 'above' | 'below'
+
+export interface PriceAlert {
+  id: string
+  symbol: string
+  condition: AlertCondition
+  targetPrice: number
+  triggered: boolean
+  createdAt: number
+}

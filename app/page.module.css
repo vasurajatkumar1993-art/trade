@@ -14,79 +14,23 @@
   overflow: hidden;
 }
 
-.infoRow {
+/* Top row: News | Top Gainers | 10%+ Movers | Stock Quote */
+.topRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 280px 1fr 1fr 300px;
   flex-shrink: 0;
+  height: 44%;
+  min-height: 280px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.infoRow > :first-child {
-  border-right: 1px solid var(--border-subtle);
+.topRow > :nth-child(n+2) {
+  border-left: 1px solid var(--border-subtle);
 }
 
-.bodyGrid {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 260px 1fr 300px;
-  min-height: 0;
-  overflow: hidden;
-}
-
-/* Left column: Level 2 + Time & Sales stacked */
-.leftCol {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  overflow: hidden;
-  border-right: 1px solid var(--border-subtle);
-}
-
-.l2Area {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.tsArea {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  border-top: 1px solid var(--border-subtle);
-}
-
-/* Center column: Chart + bottom row */
-.centerCol {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.chartArea {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
-
+/* Bottom row: Charts fill remaining space */
 .bottomRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-top: 1px solid var(--border-subtle);
-  flex-shrink: 0;
-  max-height: 190px;
-  overflow: hidden;
-}
-
-.bottomRow > :last-child {
-  border-left: 1px solid var(--border-subtle);
-}
-
-/* Right column: order + alerts */
-.rightCol {
-  display: flex;
-  flex-direction: column;
+  flex: 1;
   min-height: 0;
   overflow: hidden;
-  border-left: 1px solid var(--border-subtle);
 }
