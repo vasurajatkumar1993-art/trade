@@ -32,8 +32,12 @@ export default function CandlestickChart({ candles, coin, timeframe, onTimeframe
     const W = rect.width
     const H = rect.height
     const PAD_TOP = 16
-    const PAD_BOT = 28
     const PAD_RIGHT = 56
+    const VOL_HEIGHT = Math.round(H * 0.18)
+    const VOL_GAP = 8
+    const TIME_LABELS = 22
+    const CANDLE_BOT = H - VOL_HEIGHT - VOL_GAP - TIME_LABELS
+    const chartH = CANDLE_BOT - PAD_TOP
 
     ctx.clearRect(0, 0, W, H)
 
@@ -42,8 +46,10 @@ export default function CandlestickChart({ candles, coin, timeframe, onTimeframe
     const maxP = Math.max(...prices)
     const range = maxP - minP || 1
 
+    const volumes = candles.map(c => c.volume)
+    const maxVol = Math.max(...volumes, 1)
+
     const chartW = W - PAD_RIGHT
-    const chartH = H - PAD_TOP - PAD_BOT
     const candleW = Math.max(2, (chartW / candles.length) * 0.6)
     const gap = chartW / candles.length
 
@@ -51,7 +57,10 @@ export default function CandlestickChart({ candles, coin, timeframe, onTimeframe
       return PAD_TOP + chartH - ((price - minP) / range) * chartH
     }
 
-    // Grid
+    const green = '#30d158'
+    const red = '#ff453a'
+
+    // Price grid
     const gridSteps = 5
     ctx.font = '12px DM Mono, SF Mono, monospace'
     ctx.textAlign = 'right'
@@ -75,6 +84,7 @@ export default function CandlestickChart({ candles, coin, timeframe, onTimeframe
     ctx.textAlign = 'center'
     ctx.fillStyle = 'rgba(255, 255, 255, 0.22)'
     const labelInterval = Math.max(1, Math.floor(candles.length / 6))
+    const timeLabelY = CANDLE_BOT + VOL_GAP + VOL_HEIGHT + 14
     for (let i = 0; i < candles.length; i += labelInterval) {
       const x = i * gap + gap / 2
       const date = new Date(candles[i].time)
@@ -84,19 +94,17 @@ export default function CandlestickChart({ candles, coin, timeframe, onTimeframe
       } else {
         label = `${date.getDate()}/${date.getMonth() + 1}`
       }
-      ctx.fillText(label, x, H - 8)
+      ctx.fillText(label, x, timeLabelY)
     }
 
-    // Candles
-    const green = '#30d158'
-    const red = '#ff453a'
-
+    // Candlesticks
     for (let i = 0; i < candles.length; i++) {
       const c = candles[i]
       const x = i * gap + gap / 2
       const isUp = c.close >= c.open
       const color = isUp ? green : red
 
+      // Wick
       ctx.strokeStyle = color
       ctx.lineWidth = 1
       ctx.beginPath()
@@ -104,12 +112,40 @@ export default function CandlestickChart({ candles, coin, timeframe, onTimeframe
       ctx.lineTo(x, yPos(c.low))
       ctx.stroke()
 
+      // Body
       const bodyTop = yPos(Math.max(c.open, c.close))
       const bodyBot = yPos(Math.min(c.open, c.close))
       const bodyH = Math.max(1, bodyBot - bodyTop)
-
       ctx.fillStyle = color
       ctx.fillRect(x - candleW / 2, bodyTop, candleW, bodyH)
+    }
+
+    // Volume bars
+    const volTop = CANDLE_BOT + VOL_GAP
+    // Separator line
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)'
+    ctx.lineWidth = 0.5
+    ctx.beginPath()
+    ctx.moveTo(0, volTop - 2)
+    ctx.lineTo(chartW, volTop - 2)
+    ctx.stroke()
+
+    // Vol label
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.18)'
+    ctx.textAlign = 'right'
+    ctx.font = '10px DM Mono, SF Mono, monospace'
+    ctx.fillText('VOL', W - 4, volTop + 10)
+
+    for (let i = 0; i < candles.length; i++) {
+      const c = candles[i]
+      const x = i * gap + gap / 2
+      const isUp = c.close >= c.open
+      const barH = Math.max(1, (c.volume / maxVol) * VOL_HEIGHT)
+
+      ctx.fillStyle = isUp
+        ? 'rgba(48, 209, 88, 0.25)'
+        : 'rgba(255, 69, 58, 0.25)'
+      ctx.fillRect(x - candleW / 2, volTop + VOL_HEIGHT - barH, candleW, barH)
     }
 
     // Current price line

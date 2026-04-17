@@ -19,6 +19,8 @@ export const COINS: CoinConfig[] = [
 export interface Position {
   held: number
   avgBuyPrice: number
+  realisedPnL: number
+  totalQty: number
 }
 
 export type Positions = Record<CoinId, Position>
@@ -39,6 +41,7 @@ export interface Candle {
   high: number
   low: number
   close: number
+  volume: number
 }
 
 export interface TradeRecord {
@@ -67,6 +70,7 @@ export interface Level2Entry {
   price: number
   size: number
   total: number
+  maker: string
 }
 
 export interface Level2Data {

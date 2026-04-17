@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import {
   OrderMode, CoinId, COINS, Timeframe,
   Positions, MarketDataMap, TradeRecord, Candle,
@@ -16,7 +16,7 @@ import BalancePanel from '@/components/BalancePanel'
 import PricePanel from '@/components/PricePanel'
 import TradePanel from '@/components/TradePanel'
 import CandlestickChart from '@/components/CandlestickChart'
-import HoldingsPanel from '@/components/HoldingsPanel'
+import PositionSummary from '@/components/PositionSummary'
 import TradeHistory from '@/components/TradeHistory'
 import PriceAlerts from '@/components/PriceAlerts'
 import AlertToast from '@/components/AlertToast'
@@ -27,10 +27,10 @@ import styles from './page.module.css'
 const INITIAL_USD = 50000
 
 const INITIAL_POSITIONS: Positions = {
-  BTC:  { held: 0, avgBuyPrice: 0 },
-  ETH:  { held: 0, avgBuyPrice: 0 },
-  SOL:  { held: 0, avgBuyPrice: 0 },
-  AVAX: { held: 0, avgBuyPrice: 0 },
+  BTC:  { held: 0, avgBuyPrice: 0, realisedPnL: 0, totalQty: 0 },
+  ETH:  { held: 0, avgBuyPrice: 0, realisedPnL: 0, totalQty: 0 },
+  SOL:  { held: 0, avgBuyPrice: 0, realisedPnL: 0, totalQty: 0 },
+  AVAX: { held: 0, avgBuyPrice: 0, realisedPnL: 0, totalQty: 0 },
 }
 
 export default function DashboardPage() {
@@ -42,10 +42,9 @@ export default function DashboardPage() {
   const [trades, setTrades]         = useState<TradeRecord[]>([])
   const [alerts, setAlerts]         = useState<PriceAlert[]>([])
 
-  const coin       = COINS.find(c => c.id === activeCoin)!
-  const market     = marketData[activeCoin]
-  const position   = positions[activeCoin]
-  const totalTrades = trades.length
+  const coin     = COINS.find(c => c.id === activeCoin)!
+  const market   = marketData[activeCoin]
+  const position = positions[activeCoin]
 
   // Generate candle data per coin per timeframe
   const [candles, setCandles] = useState<Record<CoinId, Record<Timeframe, Candle[]>>>(() => {
@@ -123,6 +122,7 @@ export default function DashboardPage() {
                 high: currentPrice,
                 low: currentPrice,
                 close: currentPrice,
+                volume: Math.round(Math.random() * 200 + 20),
               })
               const maxLen = tf === '1m' ? 180 : tf === '1H' ? 60 : 40
               if (arr.length > maxLen) arr.shift()
@@ -132,6 +132,7 @@ export default function DashboardPage() {
                 high: Math.max(last.high, currentPrice),
                 low: Math.min(last.low, currentPrice),
                 close: currentPrice,
+                volume: last.volume + Math.round(Math.random() * 10),
               }
             }
             coinCandles[tf] = arr
@@ -202,21 +203,34 @@ export default function DashboardPage() {
           : price
         return {
           ...prev,
-          [activeCoin]: { held: newHeld, avgBuyPrice: newAvg },
+          [activeCoin]: {
+            held: newHeld,
+            avgBuyPrice: newAvg,
+            realisedPnL: pos.realisedPnL,
+            totalQty: pos.totalQty + amount,
+          },
         }
       })
     } else {
       if (amount > position.held) return
 
       const proceeds = cost - fee
+      const costOfSold = amount * position.avgBuyPrice
+      const realisedGain = proceeds - costOfSold
+
       setUsdBalance(prev => prev + proceeds)
-      setPositions(prev => ({
-        ...prev,
-        [activeCoin]: {
-          ...prev[activeCoin],
-          held: prev[activeCoin].held - amount,
-        },
-      }))
+      setPositions(prev => {
+        const pos = prev[activeCoin]
+        return {
+          ...prev,
+          [activeCoin]: {
+            held: pos.held - amount,
+            avgBuyPrice: pos.avgBuyPrice,
+            realisedPnL: pos.realisedPnL + realisedGain,
+            totalQty: pos.totalQty + amount,
+          },
+        }
+      })
     }
 
     setTrades(prev => [
@@ -268,6 +282,8 @@ export default function DashboardPage() {
               <Level2Book
                 data={level2[activeCoin]}
                 currentPrice={market.price}
+                coin={coin}
+                market={market}
               />
             </div>
             <div className={styles.tsArea}>
@@ -275,7 +291,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Center: Chart + Trade History + Holdings */}
+          {/* Center: Chart + Position Summary + Trade History */}
           <div className={styles.centerCol}>
             <div className={styles.chartArea}>
               <CandlestickChart
@@ -286,13 +302,11 @@ export default function DashboardPage() {
               />
             </div>
             <div className={styles.bottomRow}>
-              <TradeHistory trades={trades} />
-              <HoldingsPanel
-                position={position}
-                coin={coin}
-                price={market.price}
-                totalTrades={totalTrades}
+              <PositionSummary
+                positions={positions}
+                marketData={marketData}
               />
+              <TradeHistory trades={trades} />
             </div>
           </div>
 

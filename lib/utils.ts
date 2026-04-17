@@ -33,6 +33,7 @@ export function generateCandles(basePrice: number, count: number, tf: Timeframe 
 
   // Scale volatility to timeframe
   const volScale = tf === '1m' ? 0.003 : tf === '1H' ? 0.015 : tf === '4H' ? 0.025 : 0.04
+  const baseVol = tf === '1m' ? 50 : tf === '1H' ? 400 : tf === '4H' ? 1200 : 3000
 
   for (let i = 0; i < count; i++) {
     const volatility = price * volScale
@@ -40,6 +41,7 @@ export function generateCandles(basePrice: number, count: number, tf: Timeframe 
     const close = open + (Math.random() - 0.45) * volatility
     const high = Math.max(open, close) + Math.random() * volatility * 0.5
     const low  = Math.min(open, close) - Math.random() * volatility * 0.5
+    const volume = Math.round(baseVol * (0.3 + Math.random() * 1.4))
 
     candles.push({
       time: now - (count - i) * interval,
@@ -47,12 +49,20 @@ export function generateCandles(basePrice: number, count: number, tf: Timeframe 
       high: Math.round(high * 100) / 100,
       low:  Math.round(low * 100) / 100,
       close: Math.round(close * 100) / 100,
+      volume,
     })
 
     price = close
   }
 
   return candles
+}
+
+// Simulated market maker names
+const MAKERS = ['CITI', 'GSCO', 'JPMC', 'MSCO', 'BARX', 'BOFA', 'UBSS', 'DBAB', 'NOMS', 'HSBC', 'RBCC', 'ARCA']
+
+function randomMaker(): string {
+  return MAKERS[Math.floor(Math.random() * MAKERS.length)]
 }
 
 // Generate simulated Level 2 order book
@@ -74,11 +84,13 @@ export function generateLevel2(currentPrice: number, depth: number = 12): Level2
       price: Math.round((currentPrice - i * tickSize) * 100) / 100,
       size: bidSize,
       total: Math.round(bidTotal * 1000) / 1000,
+      maker: randomMaker(),
     })
     asks.push({
       price: Math.round((currentPrice + i * tickSize) * 100) / 100,
       size: askSize,
       total: Math.round(askTotal * 1000) / 1000,
+      maker: randomMaker(),
     })
   }
 
@@ -116,6 +128,7 @@ export function tickLevel2(prev: Level2Data, currentPrice: number): Level2Data {
       price: Math.round((currentPrice - (i + 1) * tickSize) * 100) / 100,
       size: Math.round(newSize * 1000) / 1000,
       total: 0,
+      maker: Math.random() > 0.7 ? randomMaker() : b.maker,
     }
   })
 
@@ -126,6 +139,7 @@ export function tickLevel2(prev: Level2Data, currentPrice: number): Level2Data {
       price: Math.round((currentPrice + (i + 1) * tickSize) * 100) / 100,
       size: Math.round(newSize * 1000) / 1000,
       total: 0,
+      maker: Math.random() > 0.7 ? randomMaker() : a.maker,
     }
   })
 
