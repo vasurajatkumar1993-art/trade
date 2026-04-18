@@ -10,23 +10,15 @@ const alpacaHeaders: HeadersInit = {
   'APCA-API-SECRET-KEY': ALPACA_SECRET,
 }
 
-// In-memory cache for float data (doesn't change frequently)
-const floatCache: Record<string, { float: string; floatNum: number; marketCap: string; name: string; ts: number }> = {}
-const FLOAT_CACHE_TTL = 3600000 // 1 hour
+// Float data is cached by Next.js fetch cache (revalidate: 3600 = 1 hour)
+// No in-memory cache needed — Vercel handles this reliably
 
 async function getFloatData(symbol: string): Promise<{ float: string; floatNum: number; marketCap: string; name: string }> {
-  // Check cache
-  const cached = floatCache[symbol]
-  if (cached && Date.now() - cached.ts < FLOAT_CACHE_TTL) {
-    return cached
-  }
-
   if (!FINNHUB_KEY) {
     return { float: '—', floatNum: 0, marketCap: '—', name: symbol }
   }
 
   try {
-    // Finnhub company profile2 endpoint — free tier, has shares outstanding + market cap
     const res = await fetch(
       `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${FINNHUB_KEY}`,
       { next: { revalidate: 3600 } }
@@ -35,17 +27,15 @@ async function getFloatData(symbol: string): Promise<{ float: string; floatNum: 
     if (!res.ok) return { float: '—', floatNum: 0, marketCap: '—', name: symbol }
 
     const data = await res.json()
-    const sharesOut = data.shareOutstanding || 0 // in millions
-    const mktCap = data.marketCapitalization || 0 // in millions
+    const sharesOut = data.shareOutstanding || 0
+    const mktCap = data.marketCapitalization || 0
     const companyName = data.name || symbol
 
     const floatNum = sharesOut * 1e6
     const floatStr = formatNum(floatNum)
     const mcStr = formatNum(mktCap * 1e6)
 
-    const result = { float: floatStr, floatNum, marketCap: mcStr, name: companyName }
-    floatCache[symbol] = { ...result, ts: Date.now() }
-    return result
+    return { float: floatStr, floatNum, marketCap: mcStr, name: companyName }
   } catch {
     return { float: '—', floatNum: 0, marketCap: '—', name: symbol }
   }
@@ -66,6 +56,7 @@ export async function GET() {
 
   try {
     // 1. Discover active stocks
+    // CACHE: Refreshes the list of most active stocks every 10 seconds
     const moversRes = await fetch(
       `${DATA_URL}/v1beta1/screener/stocks/most-actives?by=trades&top=50`,
       { headers: alpacaHeaders, next: { revalidate: 10 } }
@@ -82,6 +73,7 @@ export async function GET() {
     symbols = symbols.slice(0, 50)
 
     // 2. Fetch price snapshots
+    // CACHE: Price data refreshes every 5 seconds — this is the fastest-updating data
     const snapRes = await fetch(
       `${DATA_URL}/v2/stocks/snapshots?symbols=${symbols.join(',')}&feed=iex`,
       { headers: alpacaHeaders, next: { revalidate: 5 } }

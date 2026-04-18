@@ -6,7 +6,7 @@ export default function TopBar() {
       <div className={styles.logo}>TradeX</div>
       <div className={styles.badge}>
         <div className={styles.dot} />
-        Paper Trading
+        Momentum Scanner
       </div>
     </div>
   )

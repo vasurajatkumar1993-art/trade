@@ -13,6 +13,7 @@ export async function GET() {
 
   try {
     // Fetch general market news
+    // CACHE: Vercel stores this response for 60 seconds before fetching fresh data
     const generalRes = await fetch(
       `${FINNHUB_URL}/news?category=general&token=${FINNHUB_KEY}`,
       { next: { revalidate: 60 } }
@@ -33,6 +34,7 @@ export async function GET() {
     const companyPromises = TRACKED_SYMBOLS.slice(0, 3).map(async (sym) => {
       try {
         const res = await fetch(
+          // CACHE: Company news refreshes every 120 seconds (2 minutes)
           `${FINNHUB_URL}/company-news?symbol=${sym}&from=${fromStr}&to=${toStr}&token=${FINNHUB_KEY}`,
           { next: { revalidate: 120 } }
         )

@@ -54,6 +54,7 @@ export async function GET(request: Request) {
     const startStr = start.toISOString()
     const endStr   = now.toISOString()
 
+    // CACHE: 1-minute charts refresh every 5 seconds, 5-min and daily refresh every 30 seconds
     const res = await fetch(
       `${DATA_URL}/v2/stocks/${encodeURIComponent(symbol)}/bars?timeframe=${tf}&start=${startStr}&end=${endStr}&limit=${limit}&feed=iex&sort=asc`,
       { headers, next: { revalidate: timeframe === '1m' ? 5 : 30 } }
