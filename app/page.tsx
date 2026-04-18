@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { StockTicker, NewsItem, Candle, ChartTimeframe } from '@/lib/types'
 import { generateStocks, tickStocks, generateNews, generateCandles } from '@/lib/utils'
 import TopBar from '@/components/TopBar'
@@ -13,7 +13,9 @@ import styles from './page.module.css'
 
 export default function DashboardPage() {
   const [stocks, setStocks]               = useState<StockTicker[]>(() => generateStocks())
-  const [news, setNews]                   = useState<NewsItem[]>(() => generateNews(10))
+  const [news, setNews]                   = useState<NewsItem[]>([])
+  const [newsIsLive, setNewsIsLive]       = useState(false)
+  const [newsLastUpdate, setNewsLastUpdate] = useState<number | null>(null)
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null)
   const [chartData, setChartData]         = useState<Record<ChartTimeframe, Candle[]> | null>(null)
 
@@ -21,19 +23,44 @@ export default function DashboardPage() {
     ? stocks.find(s => s.symbol === selectedSymbol) || null
     : null
 
+  // ─── Fetch news from API (live) or fall back to simulated ───
+  const fetchNews = useCallback(async () => {
+    try {
+      const res = await fetch('/api/news')
+      const data = await res.json()
+
+      if (data.source === 'finnhub' && data.news.length > 0) {
+        setNews(data.news)
+        setNewsIsLive(true)
+        setNewsLastUpdate(Date.now())
+        return
+      }
+    } catch (e) {
+      // API unavailable — fall through to simulated
+    }
+
+    // Fallback: simulated news
+    setNews(generateNews(10))
+    setNewsIsLive(false)
+    setNewsLastUpdate(Date.now())
+  }, [])
+
+  // Initial news fetch
+  useEffect(() => {
+    fetchNews()
+  }, [fetchNews])
+
+  // Refresh news every 60 seconds (live) or 30 seconds (simulated)
+  useEffect(() => {
+    const interval = setInterval(fetchNews, newsIsLive ? 60000 : 30000)
+    return () => clearInterval(interval)
+  }, [fetchNews, newsIsLive])
+
   // Tick stock prices every 2 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setStocks(prev => tickStocks(prev))
     }, 2000)
-    return () => clearInterval(interval)
-  }, [])
-
-  // Refresh news every 30 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNews(generateNews(10))
-    }, 30000)
     return () => clearInterval(interval)
   }, [])
 
@@ -84,7 +111,11 @@ export default function DashboardPage() {
         <TopBar />
 
         <div className={styles.topRow}>
-          <NewsWindow news={news} />
+          <NewsWindow
+            news={news}
+            isLive={newsIsLive}
+            lastUpdate={newsLastUpdate}
+          />
           <TopGainers stocks={stocks} />
           <GainersPlus10
             stocks={stocks}

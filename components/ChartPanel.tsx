@@ -178,9 +178,8 @@ function ChartView({ candles, label, symbol, indicators }: ChartViewProps) {
     const candleW = Math.max(3, (chartW / viewCount) * 0.7)
     const gap = chartW / viewCount
 
-    function yPos(price: number): number {
-      return PAD_TOP + chartH - ((price - minP) / range) * chartH
-    }
+    const yPos = (price: number): number =>
+      PAD_TOP + chartH - ((price - minP) / range) * chartH
 
     const green = '#30d158'
     const red = '#ff453a'

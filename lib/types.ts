@@ -23,6 +23,7 @@ export interface NewsItem {
   source: string
   symbols: string[]
   isHot: boolean
+  url?: string
 }
 
 export interface Candle {
