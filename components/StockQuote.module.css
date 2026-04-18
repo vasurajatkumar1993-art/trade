@@ -80,3 +80,13 @@
 .statVal   { color: var(--text-secondary); }
 
 .rvolHot { color: var(--gold); font-weight: 500; }
+
+@media (max-width: 640px) {
+  .panel { padding: 16px; }
+  .sym { font-size: 22px; }
+  .price { font-size: 22px; }
+  .badge { font-size: 14px; }
+  .name { font-size: 13px; }
+  .grid { grid-template-columns: 1fr; gap: 4px; }
+  .stat { font-size: 13px; padding: 6px 0; }
+}

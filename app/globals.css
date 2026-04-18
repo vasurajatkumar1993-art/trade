@@ -55,6 +55,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+@media (max-width: 1024px) {
+  html, body {
+    overflow: auto;
+    height: auto;
+    min-height: 100vh;
+  }
+  body {
+    height: auto;
+  }
+}
+
 ::selection {
   background: rgba(41, 151, 255, 0.3);
 }

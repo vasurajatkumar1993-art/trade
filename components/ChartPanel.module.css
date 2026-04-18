@@ -112,3 +112,91 @@
 
 .modalChart { flex: 1; min-height: 0; }
 .modalChart .chartView { height: 100%; }
+
+/* ─── Tablet: 2 + 1 chart layout ─── */
+@media (max-width: 1024px) {
+  .toolbar {
+    padding: 8px 12px;
+    gap: 6px;
+  }
+
+  .toolHint { display: none; }
+
+  .indBtn {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .placeholderGrid, .chartGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .placeholderGrid > :nth-child(3),
+  .chartGrid > :nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .chartView {
+    min-height: 200px;
+  }
+
+  .modalContent {
+    width: 96vw;
+    height: 80vh;
+    border-radius: var(--radius-md);
+  }
+}
+
+/* ─── Mobile: stacked charts ─── */
+@media (max-width: 640px) {
+  .placeholderGrid, .chartGrid {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .chartView {
+    min-height: 250px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .placeholder {
+    min-height: 180px;
+    padding: 20px 16px;
+  }
+
+  .phTf { font-size: 16px; }
+  .phIcon { font-size: 22px; }
+  .phText { font-size: 13px; }
+
+  .chartHeader {
+    padding: 8px 10px 4px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .ohlcv {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 10px;
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .chartSym { font-size: 15px; }
+
+  .expandBtn {
+    font-size: 14px;
+    padding: 4px 10px;
+  }
+
+  .modalContent {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .modalHeader {
+    padding: 10px 16px;
+  }
+}

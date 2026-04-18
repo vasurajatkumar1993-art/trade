@@ -89,68 +89,29 @@
   border-left: 2px solid transparent;
 }
 
-.row:hover {
-  background: var(--bg-hover);
-}
+.row:hover { background: var(--bg-hover); }
+.selected { background: rgba(41, 151, 255, 0.06); border-left-color: var(--accent); }
+.setupRow { background: rgba(255, 214, 10, 0.04); border-left: 2px solid var(--gold); }
+.setupRow:hover { background: rgba(255, 214, 10, 0.08); }
+.setupRow.selected { background: rgba(255, 214, 10, 0.08); border-left-color: var(--gold); }
 
-.selected {
-  background: rgba(41, 151, 255, 0.06);
-  border-left-color: var(--accent);
-}
-
-/* A+ Setup row — glowing left border + subtle gold bg */
-.setupRow {
-  background: rgba(255, 214, 10, 0.04);
-  border-left: 2px solid var(--gold);
-}
-
-.setupRow:hover {
-  background: rgba(255, 214, 10, 0.08);
-}
-
-.setupRow.selected {
-  background: rgba(255, 214, 10, 0.08);
-  border-left-color: var(--gold);
-}
-
-.badgeCol {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.badgeCol { display: flex; align-items: center; justify-content: center; }
 
 .setupBadge {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  color: #000;
-  background: var(--gold);
-  padding: 1px 4px;
-  border-radius: 3px;
-  letter-spacing: 0.04em;
-  line-height: 1.4;
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700; color: #000;
+  background: var(--gold); padding: 1px 4px; border-radius: 3px; letter-spacing: 0.04em; line-height: 1.4;
 }
 
-.sym {
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 12px;
-  color: var(--accent);
-}
-
+.sym { font-family: var(--font-sans); font-weight: 600; font-size: 12px; color: var(--accent); }
 .price { text-align: right; color: var(--text-secondary); }
 .pct   { text-align: right; color: var(--green); font-weight: 500; }
-
 .rvol    { text-align: right; color: var(--text-secondary); }
 .rvolHot { color: var(--gold); font-weight: 600; }
-
 .floatVal { text-align: right; color: var(--text-tertiary); font-size: 11px; }
 .floatLow { color: var(--gold); font-weight: 500; }
-
 .avgVol { text-align: right; color: var(--text-tertiary); font-size: 11px; }
 .vol    { text-align: right; color: var(--text-secondary); }
 
-/* Legend bar at bottom */
 .legend {
   flex-shrink: 0;
   display: flex;
@@ -162,17 +123,36 @@
 }
 
 .legendBadge {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  color: #000;
-  background: var(--gold);
-  padding: 1px 4px;
-  border-radius: 3px;
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700; color: #000;
+  background: var(--gold); padding: 1px 4px; border-radius: 3px;
 }
 
 .legendText {
   font-family: var(--font-sans);
   font-size: 11px;
   color: var(--text-faint);
+}
+
+/* ─── Mobile: show only badge, symbol, price, change, RVOL ─── */
+@media (max-width: 640px) {
+  .header {
+    grid-template-columns: 28px 56px 1fr 56px 48px;
+  }
+
+  .row {
+    grid-template-columns: 28px 56px 1fr 56px 48px;
+    font-size: 13px;
+    padding: 8px 4px;
+  }
+
+  /* Hide Float, Avg Vol, Volume columns */
+  .header span:nth-child(6),
+  .header span:nth-child(7),
+  .header span:nth-child(8) { display: none; }
+
+  .floatVal { display: none; }
+  .avgVol { display: none; }
+  .vol { display: none; }
+
+  .sym { font-size: 14px; }
 }

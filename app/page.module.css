@@ -14,7 +14,7 @@
   overflow: hidden;
 }
 
-/* Top row: News | Top Gainers | 10%+ Movers | Stock Quote */
+/* Desktop: 4-column top row */
 .topRow {
   display: grid;
   grid-template-columns: 280px 1fr 1fr 300px;
@@ -28,9 +28,72 @@
   border-left: 1px solid var(--border-subtle);
 }
 
-/* Bottom row: Charts fill remaining space */
 .bottomRow {
   flex: 1;
   min-height: 0;
   overflow: hidden;
+}
+
+/* ─── Tablet (≤1024px) ─── */
+@media (max-width: 1024px) {
+  .main {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
+
+  .dash {
+    height: auto;
+    overflow: visible;
+  }
+
+  .topRow {
+    grid-template-columns: 1fr 1fr;
+    height: auto;
+    min-height: 0;
+  }
+
+  .topRow > :nth-child(n+2) {
+    border-left: none;
+  }
+
+  .topRow > :nth-child(odd) {
+    border-right: 1px solid var(--border-subtle);
+  }
+
+  .topRow > :nth-child(n+3) {
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .topRow > * {
+    height: 280px;
+  }
+
+  .bottomRow {
+    height: 400px;
+    flex: none;
+  }
+}
+
+/* ─── Mobile (≤640px) ─── */
+@media (max-width: 640px) {
+  .topRow {
+    grid-template-columns: 1fr;
+  }
+
+  .topRow > :nth-child(odd) {
+    border-right: none;
+  }
+
+  .topRow > :nth-child(n+2) {
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .topRow > * {
+    height: 320px;
+  }
+
+  .bottomRow {
+    height: 500px;
+  }
 }
