@@ -12,6 +12,7 @@ export interface StockTicker {
   avgVolume30d: number
   relativeVolume: number
   float: string
+  floatNum: number
   marketCap: string
 }
 

@@ -17,22 +17,27 @@ export function formatCompact(value: number): string {
 
 // ─── Simulated Nasdaq Stocks ───
 
-const STOCK_DEFS: { symbol: string; name: string; basePrice: number; float: string; marketCap: string }[] = [
-  { symbol: 'NVDA', name: 'NVIDIA Corp',       basePrice: 142.50, float: '2.45B', marketCap: '3.49T' },
-  { symbol: 'TSLA', name: 'Tesla Inc',          basePrice: 178.20, float: '3.19B', marketCap: '569B' },
-  { symbol: 'AAPL', name: 'Apple Inc',          basePrice: 213.40, float: '15.2B', marketCap: '3.28T' },
-  { symbol: 'AMD',  name: 'Advanced Micro',     basePrice: 164.80, float: '1.61B', marketCap: '266B' },
-  { symbol: 'SMCI', name: 'Super Micro',        basePrice: 38.70,  float: '165M',  marketCap: '22.8B' },
-  { symbol: 'MSTR', name: 'MicroStrategy',      basePrice: 368.50, float: '13.6M', marketCap: '73.2B' },
-  { symbol: 'PLTR', name: 'Palantir Tech',      basePrice: 87.20,  float: '2.13B', marketCap: '198B' },
-  { symbol: 'RIVN', name: 'Rivian Automotive',  basePrice: 14.30,  float: '835M',  marketCap: '14.3B' },
-  { symbol: 'SOFI', name: 'SoFi Technologies', basePrice: 14.85,  float: '950M',  marketCap: '15.7B' },
-  { symbol: 'IONQ', name: 'IonQ Inc',           basePrice: 32.40,  float: '168M',  marketCap: '7.1B' },
-  { symbol: 'RGTI', name: 'Rigetti Computing',  basePrice: 11.20,  float: '158M',  marketCap: '2.8B' },
-  { symbol: 'LUNR', name: 'Intuitive Machines', basePrice: 18.60,  float: '82M',   marketCap: '5.2B' },
-  { symbol: 'BTOG', name: 'Bit Origin Ltd',     basePrice: 2.55,   float: '14.7M', marketCap: '45M' },
-  { symbol: 'MYSE', name: 'MySE Holdings',      basePrice: 5.47,   float: '8.2M',  marketCap: '32M' },
-  { symbol: 'ONFQ', name: 'OnfoQuest Inc',      basePrice: 1.52,   float: '12M',   marketCap: '28M' },
+const STOCK_DEFS: { symbol: string; name: string; basePrice: number; float: string; floatNum: number; marketCap: string }[] = [
+  { symbol: 'NVDA', name: 'NVIDIA Corp',       basePrice: 142.50, float: '2.45B', floatNum: 2450e6, marketCap: '3.49T' },
+  { symbol: 'TSLA', name: 'Tesla Inc',          basePrice: 178.20, float: '3.19B', floatNum: 3190e6, marketCap: '569B' },
+  { symbol: 'AAPL', name: 'Apple Inc',          basePrice: 213.40, float: '15.2B', floatNum: 15200e6, marketCap: '3.28T' },
+  { symbol: 'AMD',  name: 'Advanced Micro',     basePrice: 164.80, float: '1.61B', floatNum: 1610e6, marketCap: '266B' },
+  { symbol: 'SMCI', name: 'Super Micro',        basePrice: 38.70,  float: '165M',  floatNum: 165e6, marketCap: '22.8B' },
+  { symbol: 'MSTR', name: 'MicroStrategy',      basePrice: 368.50, float: '13.6M', floatNum: 13.6e6, marketCap: '73.2B' },
+  { symbol: 'PLTR', name: 'Palantir Tech',      basePrice: 87.20,  float: '2.13B', floatNum: 2130e6, marketCap: '198B' },
+  { symbol: 'RIVN', name: 'Rivian Automotive',  basePrice: 14.30,  float: '835M',  floatNum: 835e6, marketCap: '14.3B' },
+  { symbol: 'SOFI', name: 'SoFi Technologies', basePrice: 14.85,  float: '950M',  floatNum: 950e6, marketCap: '15.7B' },
+  { symbol: 'IONQ', name: 'IonQ Inc',           basePrice: 32.40,  float: '168M',  floatNum: 168e6, marketCap: '7.1B' },
+  { symbol: 'RGTI', name: 'Rigetti Computing',  basePrice: 11.20,  float: '158M',  floatNum: 158e6, marketCap: '2.8B' },
+  { symbol: 'LUNR', name: 'Intuitive Machines', basePrice: 18.60,  float: '82M',   floatNum: 82e6, marketCap: '5.2B' },
+  { symbol: 'BTOG', name: 'Bit Origin Ltd',     basePrice: 2.55,   float: '14.7M', floatNum: 14.7e6, marketCap: '45M' },
+  { symbol: 'MYSE', name: 'MySE Holdings',      basePrice: 5.47,   float: '8.2M',  floatNum: 8.2e6, marketCap: '32M' },
+  { symbol: 'ONFQ', name: 'OnfoQuest Inc',      basePrice: 1.52,   float: '12M',   floatNum: 12e6, marketCap: '28M' },
+  { symbol: 'SECT', name: 'Sector Labs Inc',    basePrice: 3.65,   float: '6.1M',  floatNum: 6.1e6, marketCap: '22M' },
+  { symbol: 'GNNX', name: 'GenNext Bio',        basePrice: 4.99,   float: '9.8M',  floatNum: 9.8e6, marketCap: '51M' },
+  { symbol: 'SKKL', name: 'Skykelp Energy',     basePrice: 6.32,   float: '5.4M',  floatNum: 5.4e6, marketCap: '34M' },
+  { symbol: 'ARTV', name: 'ArtivateAI Inc',     basePrice: 7.80,   float: '11.3M', floatNum: 11.3e6, marketCap: '88M' },
+  { symbol: 'PLUB', name: 'PlusBridge Tech',    basePrice: 3.84,   float: '7.6M',  floatNum: 7.6e6, marketCap: '29M' },
 ]
 
 export function generateStocks(): StockTicker[] {
@@ -40,7 +45,7 @@ export function generateStocks(): StockTicker[] {
     const changePct = Math.round((Math.random() * 40 - 5) * 100) / 100
     const price = Math.round(s.basePrice * (1 + changePct / 100) * 100) / 100
     const avgVol = Math.round(Math.random() * 20e6 + 500e3)
-    const vol = Math.round(avgVol * (0.5 + Math.random() * 4))
+    const vol = Math.round(avgVol * (0.5 + Math.random() * 8))
 
     return {
       symbol: s.symbol,
@@ -54,6 +59,7 @@ export function generateStocks(): StockTicker[] {
       avgVolume30d: avgVol,
       relativeVolume: Math.round((vol / avgVol) * 100) / 100,
       float: s.float,
+      floatNum: s.floatNum,
       marketCap: s.marketCap,
     }
   })

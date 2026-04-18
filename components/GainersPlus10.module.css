@@ -23,6 +23,22 @@
   letter-spacing: 0.06em;
 }
 
+.counts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.setupCount {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: #000;
+  background: var(--gold);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
 .count {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -31,7 +47,7 @@
 
 .header {
   display: grid;
-  grid-template-columns: 56px 64px 60px 50px 54px 60px 60px;
+  grid-template-columns: 28px 52px 60px 52px 48px 50px 56px 56px;
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--text-faint);
@@ -42,7 +58,7 @@
   flex-shrink: 0;
 }
 
-.header span:nth-child(n+2) { text-align: right; }
+.header span:nth-child(n+3) { text-align: right; }
 
 .list {
   flex: 1;
@@ -62,7 +78,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: 56px 64px 60px 50px 54px 60px 60px;
+  grid-template-columns: 28px 52px 60px 52px 48px 50px 56px 56px;
   font-family: var(--font-mono);
   font-size: 12px;
   padding: 5px 4px;
@@ -82,6 +98,39 @@
   border-left-color: var(--accent);
 }
 
+/* A+ Setup row — glowing left border + subtle gold bg */
+.setupRow {
+  background: rgba(255, 214, 10, 0.04);
+  border-left: 2px solid var(--gold);
+}
+
+.setupRow:hover {
+  background: rgba(255, 214, 10, 0.08);
+}
+
+.setupRow.selected {
+  background: rgba(255, 214, 10, 0.08);
+  border-left-color: var(--gold);
+}
+
+.badgeCol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.setupBadge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: #000;
+  background: var(--gold);
+  padding: 1px 4px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
 .sym {
   font-family: var(--font-sans);
   font-weight: 600;
@@ -93,8 +142,37 @@
 .pct   { text-align: right; color: var(--green); font-weight: 500; }
 
 .rvol    { text-align: right; color: var(--text-secondary); }
-.rvolHot { color: var(--gold); font-weight: 500; }
+.rvolHot { color: var(--gold); font-weight: 600; }
 
 .floatVal { text-align: right; color: var(--text-tertiary); font-size: 11px; }
-.avgVol   { text-align: right; color: var(--text-tertiary); font-size: 11px; }
-.vol      { text-align: right; color: var(--text-secondary); }
+.floatLow { color: var(--gold); font-weight: 500; }
+
+.avgVol { text-align: right; color: var(--text-tertiary); font-size: 11px; }
+.vol    { text-align: right; color: var(--text-secondary); }
+
+/* Legend bar at bottom */
+.legend {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 4px;
+}
+
+.legendBadge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: #000;
+  background: var(--gold);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.legendText {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--text-faint);
+}
