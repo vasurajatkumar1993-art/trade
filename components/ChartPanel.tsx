@@ -324,9 +324,8 @@ function ChartView({ candles, label, symbol, indicators }: ChartViewProps) {
       if (allMacd.length > 0) {
         const macdMax = Math.max(...allMacd.map(Math.abs), 0.01)
 
-        function macdY(val: number): number {
-          return macdTop + macdH2 / 2 - (val / macdMax) * (macdH2 / 2 - 4)
-        }
+        const macdY = (val: number): number =>
+          macdTop + macdH2 / 2 - (val / macdMax) * (macdH2 / 2 - 4)
 
         const zeroY = macdY(0)
         ctx.strokeStyle = 'rgba(255,255,255,0.04)'; ctx.lineWidth = 0.5
