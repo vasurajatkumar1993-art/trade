@@ -19,10 +19,26 @@
 }
 .placeholder {
   background: var(--bg-primary); display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 10px; padding: 20px;
+  align-items: center; justify-content: center; gap: 8px; padding: 24px;
 }
-.phTf { font-family: var(--font-sans); font-size: 16px; font-weight: 600; color: var(--text-tertiary); }
-.phText { font-family: var(--font-sans); font-size: 13px; color: var(--text-faint); text-align: center; max-width: 200px; line-height: 1.5; }
+.phTf { font-family: var(--font-sans); font-size: 18px; font-weight: 600; color: var(--text-tertiary); }
+.phIcon {
+  font-size: 28px; color: var(--accent); opacity: 0.6;
+  animation: bounceUp 1.5s ease-in-out infinite;
+}
+@keyframes bounceUp {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.phText {
+  font-family: var(--font-sans); font-size: 14px; color: var(--text-secondary);
+  text-align: center; max-width: 240px; line-height: 1.5;
+}
+.phText strong { color: var(--accent); font-weight: 600; }
+.phHint {
+  font-family: var(--font-sans); font-size: 11px; color: var(--text-faint);
+  text-align: center; max-width: 220px; line-height: 1.4; margin-top: 4px;
+}
 
 .chartView { background: var(--bg-primary); display: flex; flex-direction: column; overflow: hidden; }
 

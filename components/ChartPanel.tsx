@@ -461,7 +461,11 @@ export default function ChartPanel({ symbol, candleData }: Props) {
           {['1 Min', '5 Min', 'Daily'].map(tf => (
             <div key={tf} className={styles.placeholder}>
               <div className={styles.phTf}>{tf}</div>
-              <div className={styles.phText}>Click a ticker above to load chart details</div>
+              <div className={styles.phIcon}>↑</div>
+              <div className={styles.phText}>
+                Select a ticker from the <strong>10%+ Movers</strong> module above to load {tf.toLowerCase()} chart data
+              </div>
+              <div className={styles.phHint}>Charts include candlesticks, volume, EMA, VWAP, and MACD indicators</div>
             </div>
           ))}
         </div>
