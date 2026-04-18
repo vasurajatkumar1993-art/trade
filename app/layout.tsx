@@ -15,8 +15,8 @@ const dmMono = DM_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'TradeX — Paper Trading',
-  description: 'A premium paper trading simulator',
+  title: 'TradeX — Momentum Scanner',
+  description: 'Real-time Nasdaq momentum scanner for active traders',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
