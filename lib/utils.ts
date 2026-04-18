@@ -220,3 +220,84 @@ export function addTimeSale(prev: TimeSaleEntry[], currentPrice: number): TimeSa
   }
   return [entry, ...prev].slice(0, 60)
 }
+
+// ─── Technical Indicators ───
+
+export function calcEMA(closes: number[], period: number): (number | null)[] {
+  const result: (number | null)[] = []
+  const k = 2 / (period + 1)
+  let ema: number | null = null
+
+  for (let i = 0; i < closes.length; i++) {
+    if (i < period - 1) {
+      result.push(null)
+    } else if (i === period - 1) {
+      let sum = 0
+      for (let j = 0; j < period; j++) sum += closes[j]
+      ema = sum / period
+      result.push(ema)
+    } else {
+      ema = closes[i] * k + (ema as number) * (1 - k)
+      result.push(ema)
+    }
+  }
+  return result
+}
+
+export function calcVWAP(candles: Candle[]): (number | null)[] {
+  const result: (number | null)[] = []
+  let cumPV = 0
+  let cumVol = 0
+
+  for (let i = 0; i < candles.length; i++) {
+    const c = candles[i]
+    const tp = (c.high + c.low + c.close) / 3
+    cumPV += tp * c.volume
+    cumVol += c.volume
+    result.push(cumVol > 0 ? cumPV / cumVol : null)
+  }
+  return result
+}
+
+export interface MACDResult {
+  macd: (number | null)[]
+  signal: (number | null)[]
+  histogram: (number | null)[]
+}
+
+export function calcMACD(closes: number[], fast: number = 12, slow: number = 26, sig: number = 9): MACDResult {
+  const emaFast = calcEMA(closes, fast)
+  const emaSlow = calcEMA(closes, slow)
+
+  const macdLine: (number | null)[] = []
+  for (let i = 0; i < closes.length; i++) {
+    if (emaFast[i] !== null && emaSlow[i] !== null) {
+      macdLine.push((emaFast[i] as number) - (emaSlow[i] as number))
+    } else {
+      macdLine.push(null)
+    }
+  }
+
+  // Signal line = EMA of MACD values
+  const macdValues = macdLine.filter(v => v !== null) as number[]
+  const signalRaw = calcEMA(macdValues, sig)
+
+  // Map signal back to full-length array
+  const signal: (number | null)[] = []
+  const histogram: (number | null)[] = []
+  let si = 0
+
+  for (let i = 0; i < closes.length; i++) {
+    if (macdLine[i] !== null) {
+      const sigVal = signalRaw[si] ?? null
+      signal.push(sigVal)
+      histogram.push(sigVal !== null ? (macdLine[i] as number) - sigVal : null)
+      si++
+    } else {
+      signal.push(null)
+      histogram.push(null)
+    }
+  }
+
+  return { macd: macdLine, signal, histogram }
+}
