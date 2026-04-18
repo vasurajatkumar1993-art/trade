@@ -1,205 +1,98 @@
-.panel {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+.panel { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
 
-/* Indicator toolbar */
 .toolbar {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  border-bottom: 1px solid var(--border-subtle);
-  flex-shrink: 0;
-  flex-wrap: wrap;
+  display: flex; align-items: center; gap: 4px; padding: 6px 12px;
+  border-bottom: 1px solid var(--border-subtle); flex-shrink: 0; flex-wrap: wrap;
 }
-
-.toolLabel {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-faint);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-right: 4px;
-}
-
+.toolLabel { font-family: var(--font-sans); font-size: 11px; font-weight: 600; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
 .indBtn {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  padding: 3px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--border-subtle);
-  background: transparent;
-  color: var(--text-faint);
-  cursor: pointer;
-  transition: all var(--transition);
+  font-family: var(--font-mono); font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px;
+  border: 1px solid var(--border-subtle); background: transparent; color: var(--text-faint); cursor: pointer; transition: all var(--transition);
 }
+.indBtn:hover { border-color: var(--border-strong); color: var(--text-secondary); }
+.indActive { background: rgba(255,255,255,0.04); }
+.toolHint { margin-left: auto; font-family: var(--font-sans); font-size: 10px; color: var(--text-faint); }
 
-.indBtn:hover {
-  border-color: var(--border-strong);
-  color: var(--text-secondary);
-}
-
-.indActive {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.toolHint {
-  margin-left: auto;
-  font-family: var(--font-sans);
-  font-size: 10px;
-  color: var(--text-faint);
-}
-
-/* Chart grid */
 .placeholderGrid, .chartGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 1px;
-  background: var(--border-subtle);
-  flex: 1;
-  min-height: 0;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px;
+  background: var(--border-subtle); flex: 1; min-height: 0;
 }
-
 .placeholder {
-  background: var(--bg-primary);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 20px;
+  background: var(--bg-primary); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px; padding: 20px;
 }
+.phTf { font-family: var(--font-sans); font-size: 16px; font-weight: 600; color: var(--text-tertiary); }
+.phText { font-family: var(--font-sans); font-size: 13px; color: var(--text-faint); text-align: center; max-width: 200px; line-height: 1.5; }
 
-.phTf {
-  font-family: var(--font-sans);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-tertiary);
-}
-
-.phText {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  color: var(--text-faint);
-  text-align: center;
-  max-width: 200px;
-  line-height: 1.5;
-}
-
-/* Individual chart */
-.chartView {
-  background: var(--bg-primary);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+.chartView { background: var(--bg-primary); display: flex; flex-direction: column; overflow: hidden; }
 
 .chartHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 12px 2px;
-  flex-shrink: 0;
-  gap: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 12px 2px; flex-shrink: 0; gap: 8px;
 }
+.chartLabel { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.chartSym { font-family: var(--font-sans); font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.chartTf { font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); background: var(--bg-card); padding: 2px 8px; border-radius: 4px; }
 
-.chartLabel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.chartSym {
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.chartTf {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-tertiary);
-  background: var(--bg-card);
-  padding: 2px 8px;
-  border-radius: 4px;
-}
-
-.ohlcv {
-  display: flex;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-faint);
-  flex: 1;
-  justify-content: center;
-}
-
-.ohlcv b {
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
+.ohlcv { display: flex; gap: 8px; font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); flex: 1; justify-content: center; }
+.ohlcv b { font-weight: 500; color: var(--text-secondary); }
 .ohlcGreen { color: var(--green) !important; }
 .ohlcRed   { color: var(--red) !important; }
 
-.chartActions {
-  display: flex;
-  gap: 4px;
+.chartActions { display: flex; gap: 4px; flex-shrink: 0; }
+
+.drawBtn, .clearBtn, .expandBtn {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px;
+  border: 1px solid var(--border-subtle); background: transparent; color: var(--text-faint); cursor: pointer; transition: all var(--transition);
+}
+.drawBtn:hover, .clearBtn:hover, .expandBtn:hover { border-color: var(--border-strong); color: var(--text-secondary); }
+.drawActive { border-color: var(--gold); color: var(--gold); background: rgba(255,214,10,0.06); }
+.expandBtn { font-size: 13px; padding: 2px 7px; }
+
+.canvasWrap { flex: 1; min-height: 0; padding: 0 2px; cursor: grab; touch-action: none; }
+.canvasWrap:active { cursor: grabbing; }
+.drawCursor { cursor: crosshair !important; }
+.drawCursor:active { cursor: crosshair !important; }
+.canvas { width: 100%; height: 100%; display: block; }
+
+/* ── Modal ── */
+.modalOverlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modalContent {
+  width: 92vw; height: 85vh;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+}
+
+.modalHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-subtle);
   flex-shrink: 0;
 }
 
-.drawBtn, .clearBtn {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--border-subtle);
-  background: transparent;
-  color: var(--text-faint);
-  cursor: pointer;
+.modalTitle {
+  font-family: var(--font-sans); font-size: 16px; font-weight: 600; color: var(--text-primary);
+}
+
+.modalClose {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: none; background: rgba(255, 255, 255, 0.06);
+  color: var(--text-tertiary); font-size: 16px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: all var(--transition);
 }
+.modalClose:hover { background: rgba(255, 255, 255, 0.12); color: var(--text-primary); }
 
-.drawBtn:hover, .clearBtn:hover {
-  border-color: var(--border-strong);
-  color: var(--text-secondary);
-}
-
-.drawActive {
-  border-color: var(--gold);
-  color: var(--gold);
-  background: rgba(255, 214, 10, 0.06);
-}
-
-.canvasWrap {
-  flex: 1;
-  min-height: 0;
-  padding: 0 2px;
-  cursor: grab;
-}
-
-.canvasWrap:active {
-  cursor: grabbing;
-}
-
-.drawCursor {
-  cursor: crosshair !important;
-}
-
-.drawCursor:active {
-  cursor: crosshair !important;
-}
-
-.canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
+.modalChart { flex: 1; min-height: 0; }
+.modalChart .chartView { height: 100%; }
